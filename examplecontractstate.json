@@ -1,0 +1,41 @@
+{
+    "libraryTx": "oiedeiae",
+    "initialWalletTx": "oieiaia",
+    "initialJuryTx": "eaieai",
+    "initialPaperTx": "eaiaei",
+    "initialTrialTx": "eaisehad",
+    "indexImpactScore": "eaiaia",
+    "config": {
+        "jurydutystake": 5,
+        "jurydutyfee": 5,
+        "initialjury": 3,
+        "publicationstake": 100,
+        "validationstake": 100,
+        "transactionfee": 0.02,
+        "papertokenmint": 0.80,
+        "publictokenreplication": 0.25,
+        "publicationduration": 131535,
+        "trialduration": 351516,
+        "minmint": 0.0016,
+        "currentmint": 0.01667,
+        "decayrate": 0.98
+    },
+    "treasurywallet": "eausahi",
+    "administrators": {
+        "woaieas": {
+            "canvote": true
+        }
+    },
+    "totalrosetta": 10000,
+    "proposed_modification": {
+        "votes": {},
+        "changes": {
+            "newcodeTx": "oeunasia",
+            "newconfig": {
+                "":""
+            },
+            "newadmins": [],
+            "removeadmins": []
+        }
+    }
+}

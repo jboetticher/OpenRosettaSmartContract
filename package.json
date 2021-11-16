@@ -2,10 +2,7 @@
   "main": "startlocal.js",
   "scripts": {
     "start": "node startlocal.js",
-    "build": "node ./build.js",
-    "fmt": "prettier --write .",
     "test": "jest",
-    "fmt:check": "prettier --check .",
     "startarlocal": "npx arlocal 8080",
     "runmining": "node startmining"
   },

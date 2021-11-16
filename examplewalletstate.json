@@ -1,29 +1,29 @@
 {
-    "eaeaieai": {
-        "amount": 315153,
-        "staked": 135,
-        "paperstakes": {
-            "143": {
-                "amount": 3153,
-                "until": 4252
-            }
-        },
+  "eaeaieai": {
+    "amount": 315153,
+    "staked": 135,
+    "paperstakes": {
+      "143": {
+        "amount": 3153,
+        "until": 4252
+      }
+    },
+    "locked": {
+      "3531": 325
+    },
+    "knowledgetokens": {
+      "153": {
+        "amount": 315,
         "locked": {
-            "3531": 325
-        },
-        "knowledgetokens": {
-            "153": {
-                "amount": 315,
-                "locked": {
-                    "15131": {
-                        "rosetta": 1515,
-                        "knowledge": 315
-                    }
-                }
-            }
-        },
-        "trials": {
-            "14": true
+          "15131": {
+            "rosetta": 1515,
+            "knowledge": 315
+          }
         }
+      }
+    },
+    "trials": {
+      "14": true
     }
+  }
 }

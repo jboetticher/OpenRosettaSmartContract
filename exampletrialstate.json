@@ -1,27 +1,27 @@
 {
-    "132": {
-        "paperid": 35151,
-        "validatorwallet": "iaieia",
-        "stakedvalidator": 100,
-        "jurorstake": 25,
-        "jurorfees": 25,
-        "trialsize": 3,
-        "prosecutionevidence": [],
-        "defenseevidence": [],
-        "pastvote": [
-            {
-                "juror": "iaei",
-                "vote": true
-            }
-        ],
-        "currentvote": [
-            {
-                "juror": "iaei",
-                "vote": true
-            }
-        ],
-        "currentjurors": ["euaiea"],
-        "currentstate": "open",
-        "until": 31515
-    }
+  "132": {
+    "paperid": 35151,
+    "validatorwallet": "iaieia",
+    "stakedvalidator": 100,
+    "jurorstake": 25,
+    "jurorfees": 25,
+    "trialsize": 3,
+    "prosecutionevidence": [],
+    "defenseevidence": [],
+    "pastvote": [
+      {
+        "juror": "iaei",
+        "vote": true
+      }
+    ],
+    "currentvote": [
+      {
+        "juror": "iaei",
+        "vote": true
+      }
+    ],
+    "currentjurors": ["euaiea"],
+    "currentstate": "open",
+    "until": 31515
+  }
 }

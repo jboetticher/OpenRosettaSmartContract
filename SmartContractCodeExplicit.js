@@ -267,12 +267,12 @@ const rosettalib = {
             }
             const frwallet = state.wallets[fr]
             const towallet = state.wallets[to] 
-            if (type != 'rosettta') {
+            if (type != 'rosetta') {
                 if (!(type in frwallet.knowledgetokens)) {
                     throw new ContractError(`${fr} does not have ${type} tokens`)                
                 }
                 if (!(type in towallet.knowledgetokens)) {
-                    towallet.knowledgetokens[type] = this.defaultKnowledgeWallet()                
+                    towallet.knowledgetokens[type] = rosettalib.defaultKnowledgeWallet()                
                 }
             }
             if (!(fr in frwallet.amount < amount)) {

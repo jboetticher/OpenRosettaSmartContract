@@ -1,114 +1,114 @@
 {
-    "previousblockTx": "eaieaiai",
-    "onboard": ["eaeisheia"],
-    "transfers": [
-        {
-            "type": "rosetta",
-            "from": "eaiaia",
-            "to": "oieaiae",
-            "amount": 19,
-            "locked_until": -1
-        }
-    ],
-    "jurydutyvolunteer": [],
-    "jurydutywithdrawal": [],
-    "stake": [
-        {
-            "from": "eaiaia",
-            "amount": 105
-        }
-    ],
-    "publish": [
-        {
-            "paperid": 15151,
-            "newpublication": true,
-            "publicationTx": "eaiae",
-            "cites": [
-                {
-                    "weight": 5,
-                    "reference": 14513
-                }
-            ],
-            "knowledgetokens": [
-                {
-                    "authorid": 3153,
-                    "amount": 1415
-                },
-                {
-                    "wallet": "eiaeaia",
-                    "amount": 153516,
-                    "locked": 41
-                }
-            ],
-            "stakes": [
-                {
-                    "wallet": "eaieaiaei",
-                    "amount": 100,
-                    "until": 253
-                }
-            ]
-        }
-    ],
-    "claim": [
-        {
-            "wallet": "eiaeaia",
-            "paperid": 51546,
-            "authorid": 15356,
-            "locked": 15163
-        }
-    ],
-    "openvalidation": [
-        {
-            "trialid": 41,
-            "paperid": 15161,
-            "validatorwallet": "eaiaeiaau",
-            "evidenceTx": "oeaieea",
-            "stake": 100,
-            "fees": 50,
-            "trialstart": 234
-        }
-    ],
-    "submitevidence": [
-        {
-            "trialid": 41,
-            "forprosecution": true,
-            "evidenceTx": "ueaiaie",
-            "wallet": "eaieaiaei"
-        }
-    ],
-    "juryselection": [
-        {
-            "trialid": 31,
-            "jurors": ["uaeiaes", "aieshad", "eoaiieai"],
-            "staketaken": 5,
-            "closeby": 31526
-        }
-    ],
-    "trialvotes": [
-        {
-            "trialid": 21,
-            "juror": "auiaeiiea",
-            "voteforinvalidation": true
-        }
-    ],
-    "trialclosure": [
-        {
-            "trialid": 11,
-            "jurors": ["ouiae", "oieaiiea"],
-            "forinvalidation": true,
-            "appealby": 135163
-        }
-    ],
-    "appeals": [
-        {
-            "trialid": 1,
-            "wallet": "eiaeaia",
-            "fee": 1300
-        }
-    ],
-    "closetrial": [1],
-    "impactscoreupdate": {
-        "impactscoreindexTx": "eiastiheai",
-        "totalimpactscore": 1000
+  "previousblockTx": "eaieaiai",
+  "onboard": ["eaeisheia"],
+  "transfers": [
+    {
+      "type": "rosetta",
+      "from": "eaiaia",
+      "to": "oieaiae",
+      "amount": 19,
+      "locked_until": -1
     }
+  ],
+  "jurydutyvolunteer": [],
+  "jurydutywithdrawal": [],
+  "stake": [
+    {
+      "from": "eaiaia",
+      "amount": 105
+    }
+  ],
+  "publish": [
+    {
+      "paperid": 15151,
+      "newpublication": true,
+      "publicationTx": "eaiae",
+      "cites": [
+        {
+          "weight": 5,
+          "reference": 14513
+        }
+      ],
+      "knowledgetokens": [
+        {
+          "authorid": 3153,
+          "amount": 1415
+        },
+        {
+          "wallet": "eiaeaia",
+          "amount": 153516,
+          "locked": 41
+        }
+      ],
+      "stakes": [
+        {
+          "wallet": "eaieaiaei",
+          "amount": 100,
+          "until": 253
+        }
+      ]
+    }
+  ],
+  "claim": [
+    {
+      "wallet": "eiaeaia",
+      "paperid": 51546,
+      "authorid": 15356,
+      "locked": 15163
+    }
+  ],
+  "openvalidation": [
+    {
+      "trialid": 41,
+      "paperid": 15161,
+      "validatorwallet": "eaiaeiaau",
+      "evidenceTx": "oeaieea",
+      "stake": 100,
+      "fees": 50,
+      "trialstart": 234
+    }
+  ],
+  "submitevidence": [
+    {
+      "trialid": 41,
+      "forprosecution": true,
+      "evidenceTx": "ueaiaie",
+      "wallet": "eaieaiaei"
+    }
+  ],
+  "juryselection": [
+    {
+      "trialid": 31,
+      "jurors": ["uaeiaes", "aieshad", "eoaiieai"],
+      "staketaken": 5,
+      "closeby": 31526
+    }
+  ],
+  "trialvotes": [
+    {
+      "trialid": 21,
+      "juror": "auiaeiiea",
+      "voteforinvalidation": true
+    }
+  ],
+  "trialclosure": [
+    {
+      "trialid": 11,
+      "jurors": ["ouiae", "oieaiiea"],
+      "forinvalidation": true,
+      "appealby": 135163
+    }
+  ],
+  "appeals": [
+    {
+      "trialid": 1,
+      "wallet": "eiaeaia",
+      "fee": 1300
+    }
+  ],
+  "closetrial": [1],
+  "impactscoreupdate": {
+    "impactscoreindexTx": "eiastiheai",
+    "totalimpactscore": 1000
+  }
 }

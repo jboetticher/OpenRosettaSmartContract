@@ -30,6 +30,45 @@ describe("Test the NFT contract", () => {
   let wallet2 = { address: "", jwk: undefined };
   let wallet3 = { address: "", jwk: undefined };
 
+  const generateTransfer = async function (
+    from,
+    to,
+    amount,
+    type,
+    write = false
+  ) {
+    let func = write ? interactWrite : interactRead
+    return await func(arweave, from, CONTRACT_ID, {
+      function: "transfer",
+      to: to,
+      amount: amount,
+      type: type,
+    });
+  };
+  const generateBalance = async function (from) {
+    return await interactRead(arweave, from, CONTRACT_ID, {
+      function: "getBalance",
+    });
+  };
+  const generateStake = async function (
+    from,
+    amount,
+    write = false
+  ) {
+    let func = write ? interactWrite : interactRead
+    return await func(arweave, from, CONTRACT_ID, {
+      function: "stakeRosetta",
+      amount: amount,
+    });
+  };
+  const generateUnStake = async function (from, amount, write = false) {
+    let func = write ? interactWrite : interactRead
+    return await func(arweave, from, CONTRACT_ID, {
+      function: "unstakeRosetta",
+      amount: amount
+    });
+  }
+
   async function state() {
     return await readContract(arweave, CONTRACT_ID);
   }
@@ -156,38 +195,9 @@ describe("Test the NFT contract", () => {
         function: "getBalance",
       })
     ).toBe(`${wallet3.address} does not exist.`);
-    // ).toThrow()
   });
 
   it("should be able to transfer funds", async () => {
-    const generateTransfer = async function (
-      from,
-      to,
-      amount,
-      type,
-      write = false
-    ) {
-      if (write) {
-        return await interactWrite(arweave, from, CONTRACT_ID, {
-          function: "transfer",
-          to: to,
-          amount: amount,
-          type: type,
-        });
-      } else {
-        return await interactRead(arweave, from, CONTRACT_ID, {
-          function: "transfer",
-          to: to,
-          amount: amount,
-          type: type,
-        });
-      }
-    };
-    const generateBalance = async function (from) {
-      return await interactRead(arweave, from, CONTRACT_ID, {
-        function: "getBalance",
-      });
-    };
     expect(
       await generateTransfer(wallet1.jwk, wallet3.address, 100, "rosetta")
     ).toBe(`${wallet3.address} does not exist`);
@@ -224,6 +234,7 @@ describe("Test the NFT contract", () => {
     expect(
       await generateTransfer(wallet1.jwk, wallet2.address, 100, "rosetta")
     ).toBe(undefined);
+    expect(await generateTransfer(wallet1.jwk, wallet2.address, undefined, "rosetta")).toBe(`${undefined} is not a number`)
     await generateTransfer(wallet1.jwk, wallet2.address, 100, "153", true);
     await mine();
     await generateTransfer(wallet1.jwk, wallet2.address, 100, "rosetta", true);
@@ -268,6 +279,80 @@ describe("Test the NFT contract", () => {
       },
     });
   });
+  it("should stake rosetta", async () => {
+    expect(await generateStake(wallet3.jwk, 100)).toBe(`${wallet3.address} does not exist.`)
+    expect(await generateUnStake(wallet3.jwk, 100)).toBe(`${wallet3.address} does not exist.`)
+    expect(await generateStake(wallet1.jwk, 100)).toBe(undefined)
+    expect(await generateUnStake(wallet1.jwk, 100)).toBe(undefined)
+    expect(await generateStake(wallet1.jwk, -100)).toBe(`only positive amounts may be transferred`)
+    expect(await generateUnStake(wallet1.jwk, -100)).toBe(`only positive amounts may be transferred`)
+    expect(await generateStake(wallet1.jwk, undefined)).toBe(`${undefined} is not a number`)
+    expect(await generateUnStake(wallet1.jwk, undefined)).toBe(`${undefined} is not a number`)
+    expect(await generateStake(wallet2.jwk, 101)).toBe(`${wallet2.address} does not have enough rosetta`)
+    expect(await generateUnStake(wallet2.jwk, 101)).toBe(`${wallet2.address} does not have enough rosetta staked`)
+    await generateStake(wallet1.jwk, 50, true)
+    mine()
+    expect(await generateBalance(wallet1.jwk)).toEqual(
+      {
+        amount: 315003,
+        staked: 185,
+        paperstakes: {
+          143: {
+            amount: 3153,
+            until: 4252,
+          },
+        },
+        locked: {
+          3531: 325,
+        },
+        knowledgetokens: {
+          153: {
+            amount: 215,
+            locked: {
+              15131: {
+                rosetta: 1515,
+                knowledge: 315,
+              },
+            },
+          },
+        },
+        trials: {
+          14: true,
+        },
+      }
+    )
+    await generateUnStake(wallet1.jwk, 70, true)
+    mine()
+    expect(await generateBalance(wallet1.jwk)).toEqual(
+      {
+        amount: 315073,
+        staked: 115,
+        paperstakes: {
+          143: {
+            amount: 3153,
+            until: 4252,
+          },
+        },
+        locked: {
+          3531: 325,
+        },
+        knowledgetokens: {
+          153: {
+            amount: 215,
+            locked: {
+              15131: {
+                rosetta: 1515,
+                knowledge: 315,
+              },
+            },
+          },
+        },
+        trials: {
+          14: true,
+        },
+      }
+    )
+  })
 });
 
 async function mine() {

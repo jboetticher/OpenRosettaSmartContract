@@ -1,7 +1,7 @@
 const ArLocal = require('arlocal');
 const Arweave = require("arweave");
 
-const port = 8080;
+const port = process.env.port;
 
 (async () => {
   const arLocal = new ArLocal.default(port, false);
@@ -20,5 +20,5 @@ const port = 8080;
   const continually_mine = setInterval(async function () {
     await arweave.api.get("mine");
     console.log("mined");
-  }, 6000);
+  }, 60000);
 })();

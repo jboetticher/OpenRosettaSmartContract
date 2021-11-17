@@ -266,15 +266,21 @@ async function handle(state, action) {
         state.nextupdate = Math.min(state.nextmaintenance, state.nextmine);
       }
     },
+    checkAmountInput: function(amount) {
+      if (isNaN(amount)) {
+        throw new ContractError(`${amount} is not a number`)
+      }
+      if (amount <= 0) {
+        throw new ContractError(`only positive amounts may be transferred`);
+      } 
+    },
     mainfunctions: {
       transfer: function (state, action) {
         const fr = action.caller;
         const to = action.input.to;
         const amount = action.input.amount;
         const type = action.input.type;
-        if (amount <= 0) {
-          throw new ContractError(`only positive amounts may be transferred`);
-        }
+        rosettalib.checkAmountInput(amount)
         if (!(fr in state.wallets)) {
           throw new ContractError(`${fr} does not exist`);
         }
@@ -313,13 +319,12 @@ async function handle(state, action) {
         const wallet = action.caller;
         if (wallet in state.wallets) {
           const amount = action.input.amount;
-          if (amount >= state.wallets[wallet].amount) {
-            throw new ContractError(
-              `${wallet} does not have ${amount} rosetta`
-            );
+          rosettalib.checkAmountInput(amount)
+          if (state.wallets[wallet].amount < amount) {
+            throw new ContractError(`${wallet} does not have enough rosetta`)
           }
           state.wallets[wallet].amount -= amount;
-          state.wallets[wallet].stake += amount;
+          state.wallets[wallet].staked += amount;
           return { state: state };
         }
         throw new ContractError(`${wallet} does not exist.`);
@@ -328,13 +333,12 @@ async function handle(state, action) {
         const wallet = action.caller;
         if (wallet in state.wallets) {
           const amount = action.input.amount;
-          if (amount >= state.wallets[wallet].stake) {
-            throw new ContractError(
-              `${wallet} does not have ${amount} rosetta staked`
-            );
+          rosettalib.checkAmountInput(amount)
+          if (state.wallets[wallet].staked < amount) {
+            throw new ContractError(`${wallet} does not have enough rosetta staked`)
           }
           state.wallets[wallet].amount += amount;
-          state.wallets[wallet].stake -= amount;
+          state.wallets[wallet].staked -= amount;
           return { state: state };
         }
         throw new ContractError(`${wallet} does not exist.`);

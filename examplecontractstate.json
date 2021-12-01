@@ -1,10 +1,15 @@
 {
-  "libraryTx": "oiedeiae",
-  "initialWalletTx": "oieiaia",
-  "initialJuryTx": "eaieai",
-  "initialPaperTx": "eaiaei",
-  "initialTrialTx": "eaisehad",
   "indexImpactScore": "eaiaia",
+  "wallets": {
+
+  },
+  "trials": {
+
+  },
+  "papers": {
+
+  },
+  "jurypool": [],
   "config": {
     "jurydutystake": 5,
     "jurydutyfee": 5,

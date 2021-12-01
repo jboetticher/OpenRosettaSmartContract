@@ -23,12 +23,30 @@ let arlocal;
 
 const port = 1990;
 
+async function uploadTransaction(data, key) {
+
+  let transaction = await arweave.createTransaction({ data: data }, key);
+  transaction.addTag('Content-Type', 'text');
+
+  await arweave.transactions.sign(transaction, key);
+
+  let uploader = await arweave.transactions.getUploader(transaction);
+
+  while (!uploader.isComplete) {
+    await uploader.uploadChunk();
+  }
+
+  return transaction.id
+}
+
 describe("Test the NFT contract", () => {
   let CONTRACT_ID;
   // let CONTRACT2_ID: string;
   let wallet1 = { address: "", jwk: undefined };
   let wallet2 = { address: "", jwk: undefined };
   let wallet3 = { address: "", jwk: undefined };
+  let wallet4 = { address: "", jwk: undefined };
+  let wallet5 = { address: "", jwk: undefined };
 
   const generateTransfer = async function (
     from,
@@ -68,7 +86,30 @@ describe("Test the NFT contract", () => {
       amount: amount
     });
   }
-
+  const generateOnboarding = async function (from, wallet, write) {
+    let func = write ? interactWrite : interactRead
+    return await func(arweave, from, CONTRACT_ID, {
+      function: "onboard",
+      wallet: wallet
+    });
+  }
+  const generatePublishPaper = async function (from, paperid, newpublication, authorweights) {
+    let func = write ? interactWrite : interactRead
+    return await func(arweave, from, CONTRACT_ID, {
+      function: "publishPaper",
+      paperid: paperid,
+      newpublication: newpublication,
+      authorweights: authorweights
+    });
+  }
+  const generateClaimPaper = async function (from, paperid, authorid) {
+    let func = write ? interactWrite : interactRead
+    return await func(arweave, from, CONTRACT_ID, {
+      function: "claimPaper",
+      paperid: paperid,
+      authorid: authorid
+    });
+  }
   async function state() {
     return await readContract(arweave, CONTRACT_ID);
   }
@@ -87,14 +128,28 @@ describe("Test the NFT contract", () => {
     wallet1.jwk = await arweave.wallets.generate();
     wallet2.jwk = await arweave.wallets.generate();
     wallet3.jwk = await arweave.wallets.generate();
+    wallet4.jwk = await arweave.wallets.generate();
+    wallet5.jwk = await arweave.wallets.generate();
     wallet1.address = await arweave.wallets.getAddress(wallet1.jwk);
     wallet2.address = await arweave.wallets.getAddress(wallet2.jwk);
     wallet3.address = await arweave.wallets.getAddress(wallet3.jwk);
+    wallet4.address = await arweave.wallets.getAddress(wallet4.jwk);
+    wallet5.address = await arweave.wallets.getAddress(wallet5.jwk);
+
 
     const contractSrc = await new TextDecoder().decode(
       await readFile(join("MainSmartContract.js"))
     );
+
+    const chunk6tx = await uploadTransaction(await readFile('prbchunks6.txt'), wallet1.jwk)
+    const chunk421tx = await uploadTransaction(await readFile('prbchunks421.txt'), wallet1.jwk)
+
+    const index = `48531535\t56594065\t${chunk6tx}\n2171022989\t2171934030\t${chunk421tx}\n`
+    const indexlocation = await uploadTransaction(index, wallet1.jwk)
+    console.log(indexlocation)
+
     const initialState = {
+      indexImpactScore: indexlocation,
       wallets: {
         [wallet1.address]: {
           amount: 315153,
@@ -131,6 +186,11 @@ describe("Test the NFT contract", () => {
           knowledgetokens: {},
         },
       },
+      administrators: {
+        [wallet3.address]: {
+          canvotes: true
+        }
+      }
     };
 
     CONTRACT_ID = await createContract(
@@ -353,6 +413,35 @@ describe("Test the NFT contract", () => {
       }
     )
   })
+
+
+  it("onboard a user", async () => {
+    expect(await generateOnboarding(wallet1.jwk, wallet4.address)).toBe('only an administrator can onboard wallets')
+    expect(await generateOnboarding(wallet1.jwk, wallet2.address)).toBe('only an administrator can onboard wallets')
+    expect(await generateOnboarding(wallet4.jwk, wallet4.address)).toBe('only an administrator can onboard wallets')
+    expect(await generateOnboarding(wallet4.jwk, wallet1.address)).toBe('only an administrator can onboard wallets')
+    expect(await generateOnboarding(wallet3.jwk, wallet1.address)).toBe('wallet already onboarded')
+    expect(await generateOnboarding(wallet3.jwk, wallet4.address)).toBe(undefined)
+    expect(await generateBalance(wallet4.jwk)).toBe(`${wallet4.address} does not exist.`)
+    await generateOnboarding(wallet3.jwk, wallet4.address, true)
+    await mine()
+    expect(await generateBalance(wallet4.jwk)).toEqual({
+      amount: 0,
+      knowledgetokens: {},
+      locked: {},
+      paperstakes: {},
+      staked: 0,
+      trials: []
+    })
+  })
+
+  it("publish a paper", async () => {
+    
+  })
+
+  // it("onboard a user", async () => {
+
+  // })
 });
 
 async function mine() {

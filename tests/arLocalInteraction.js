@@ -1,9 +1,11 @@
-import ArLocal from 'arlocal';
-//import address from '../address.json';
+const ArLocal = require('arlocal');
+const addressJson = require('../address.json');
+
+console.log(ArLocal);
 
 (async () => {
   const port = 1984;
-  const address = 'B-hx-NUejoYSA-A3o_ujD0PX9BjSi8WGTUNGxzoXssc';
+  const address = addressJson.address; //'B-hx-NUejoYSA-A3o_ujD0PX9BjSi8WGTUNGxzoXssc';
 
   const arLocal = new ArLocal(port);
 

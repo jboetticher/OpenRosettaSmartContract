@@ -4,6 +4,8 @@
   "description": "Smart contracts that govern the Open Rosetta project.",
   "main": "MainSmartContract.js",
   "scripts": {
+    "arlocal": "npx arlocal",
+    "start": "node --experimental-json-modules ./scripts/manualDeployment.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -27,6 +29,8 @@
     "arweave": "^1.10.23"
   },
   "devDependencies": {
-    "arlocal": "^1.1.29"
+    "arlocal": "^1.1.29",
+    "fs": "^0.0.1-security",
+    "node-fetch": "^3.2.3"
   }
 }

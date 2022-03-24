@@ -1,6 +1,6 @@
 {
   "name": "openrosettasmartcontract",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Smart contracts that govern the Open Rosetta project.",
   "main": "MainSmartContract.js",
   "scripts": {

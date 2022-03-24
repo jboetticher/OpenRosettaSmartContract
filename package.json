@@ -22,5 +22,8 @@
   "bugs": {
     "url": "https://github.com/TheOpenRosetta/OpenRosettaSmartContract/issues"
   },
-  "homepage": "https://github.com/TheOpenRosetta/OpenRosettaSmartContract#readme"
+  "homepage": "https://github.com/TheOpenRosetta/OpenRosettaSmartContract#readme",
+  "dependencies": {
+    "arweave": "^1.10.23"
+  }
 }

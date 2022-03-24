@@ -25,5 +25,8 @@
   "homepage": "https://github.com/TheOpenRosetta/OpenRosettaSmartContract#readme",
   "dependencies": {
     "arweave": "^1.10.23"
+  },
+  "devDependencies": {
+    "arlocal": "^1.1.29"
   }
 }

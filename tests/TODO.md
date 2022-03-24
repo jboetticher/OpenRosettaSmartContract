@@ -1,0 +1,2 @@
+- Write a testRunner javascript file that automatically mints tokens, mines the block, and runs tests from keyfile.
+- Put testRunner into its own package

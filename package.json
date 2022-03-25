@@ -5,8 +5,8 @@
   "main": "MainSmartContract.js",
   "scripts": {
     "arlocal": "npx arlocal",
-    "start": "node --experimental-json-modules ./scripts/arLocalDeployment.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "servelocal": "node --experimental-json-modules ./scripts/arLocalDeployment.js",
+    "readlocal": "node --experimental-json-modules ./scripts/arLocalRead.js"
   },
   "repository": {
     "type": "git",
@@ -26,7 +26,8 @@
   },
   "homepage": "https://github.com/TheOpenRosetta/OpenRosettaSmartContract#readme",
   "dependencies": {
-    "arweave": "^1.10.23"
+    "arweave": "^1.10.23",
+    "smartweave": "^0.4.46"
   },
   "devDependencies": {
     "arlocal": "^1.1.29",

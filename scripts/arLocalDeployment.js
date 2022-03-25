@@ -10,7 +10,7 @@
 
 import Arweave from 'arweave';
 import fs from 'fs';
-import addTokensToArLocal from "./addTokensToArLocal.js";
+import arLocalAddTokens from "./arLocalAddTokens.js";
 import packageJson from '../package.json';
 import wallet from '../keyfile.json';
 
@@ -21,9 +21,17 @@ const arweave = Arweave.init({
     port: 1984
 });
 
-// Data
+
+
+/**
+ *  If you want to create a contract, replace these sources with your proper contract
+ *  and initial state json.
+ *  You should run this script from the base directory.
+ */ 
 const initialState = fs.readFileSync('./src/HelloWorld/HelloWorldState.json', 'utf8');
-const contractSource = fs.readFileSync('./src/HelloWorld/HelloWorldContract.js', 'utf8'); // script should be run in base directory
+const contractSource = fs.readFileSync('./src/HelloWorld/HelloWorldContract.js', 'utf8');
+
+
 
 async function createContract() {
     // Add tokens to local address

@@ -8,6 +8,8 @@ The developer environment depends on the following tools:
 - [SmartWeave](https://github.com/ArweaveTeam/SmartWeave)
 - [ArLocal](https://github.com/textury/arlocal)
 
+Install dependencies with `npm install`.
+
 ### SmartWeave
 Cedrik Boudreau has a nice series of 
 [articles](https://cedriking.medium.com/lets-buidl-smartweave-contracts-6353d22c4561) 
@@ -31,20 +33,28 @@ npm install -g smartweave
 Creates a local "gateway" server that allows us to test our SmartWeave contracts without 
 having to deploy them by spending Arweave crypto. The CLI tool to start it is `npx arlocal`.
 
-## Testing With ArLocal
-There are a mixture of scripts to use within the scripts folder to help test the smart 
-contracts locally. Before using these scripts, you should run arlocal with either `npx arlocal`
-or `npm run arlocal`.   
-You can edit `arLocalDeploy.js` to specify the contract file you want to deploy locally. Run
-with `npm run deploylocal`.  
-You can edit `arLocalRead.js` to specify the state transaction you want to read from. Run with
-`npm run readlocal`. Alternatively, you can specify the transaction in the console with 
-`npm run readlocal --tx=TRANSACTION_ID`.  
-
 ## Deploying Contracts
 To deploy to Arweave with SmartWeave, you will need your keyfile for your account. The
 project is set up to use a keyfile named `keyfile.json`, stored in the main directory. You
 also ought to have a second file named `address.json` in the same directory:  
 ```
 { "address": "YOUR WALLET ADDRESS" }
+```
+
+## Testing With ArLocal
+There are a mixture of scripts to use within the scripts folder to help test the smart 
+contracts locally. Before using these scripts, you should run arlocal with either `npx arlocal`
+or `npm run arlocal`.   
+
+You can edit `arLocalDeploy.js` to specify the contract file you want to deploy locally. Run
+with `npm run deploylocal`.  
+
+You can edit `arLocalRead.js` to specify the state transaction you want to read from. Run with
+`npm run readlocal`. Alternatively, you can specify the transaction in the console with 
+`npm run readlocal --tx=CONTRACT_TRANSACTION_ID`.  
+
+You can edit `arLocalWrite.js` to specify the contract you wish to write to and which function 
+you wish to call. Run with `npm run writelocal`. Alternatively, you can specify with:
+```
+npm run writelocal --function=FUNCTION_NAME --tx=CONTRACT_TRANSACTION_ID
 ```

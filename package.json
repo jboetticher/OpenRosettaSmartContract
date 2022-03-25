@@ -5,8 +5,9 @@
   "main": "MainSmartContract.js",
   "scripts": {
     "arlocal": "npx arlocal",
-    "servelocal": "node --experimental-json-modules ./scripts/arLocalDeployment.js",
-    "readlocal": "node --experimental-json-modules ./scripts/arLocalRead.js"
+    "deploylocal": "node --experimental-json-modules ./scripts/arLocalDeployment.js",
+    "readlocal": "node --experimental-json-modules ./scripts/arLocalRead.js",
+    "writelocal": "node --experimental-json-modules ./scripts/arLocalWrite.js"
   },
   "repository": {
     "type": "git",

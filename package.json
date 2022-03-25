@@ -5,7 +5,7 @@
   "main": "MainSmartContract.js",
   "scripts": {
     "arlocal": "npx arlocal",
-    "start": "node --experimental-json-modules ./scripts/manualDeployment.js",
+    "start": "node --experimental-json-modules ./scripts/arLocalDeployment.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

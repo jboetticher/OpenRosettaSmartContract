@@ -2,7 +2,7 @@
  *  This is a script that can deploy a SmartWeave contract. You could simply use 
  *  the SmartWeave CLI instead.
  * 
- *  Based off of the script written by Cedrik Boudreau.
+ *  Based off of the script written by Cedrik Boudreau. Required some corrections.
  *  https://cedriking.medium.com/lets-buidl-smartweave-contracts-6353d22c4561
  * 
  *  @TODO: replace contractSource and initialState with actual data.
@@ -22,7 +22,7 @@ const arweave = Arweave.init({
 });
 
 // Data
-import initialState from "../src/HelloWorld/HelloWorldState.json";
+const initialState = fs.readFileSync('./src/HelloWorld/HelloWorldState.json', 'utf8');
 const contractSource = fs.readFileSync('./src/HelloWorld/HelloWorldContract.js', 'utf8'); // script should be run in base directory
 
 async function createContract() {
@@ -34,6 +34,7 @@ async function createContract() {
     contractTx.addTag('App-Name', packageJson.name);
     contractTx.addTag('App-Version', packageJson.version);
     contractTx.addTag('Content-Type', 'application/javascript');
+    console.log("Tags added to initial contract transaction.");
 
     // Sign
     await arweave.transactions.sign(contractTx, wallet);
@@ -46,19 +47,18 @@ async function createContract() {
 
     // Now, let's create the Initial State transaction
     const initialStateTx = await arweave.createTransaction({ data: initialState }, wallet);
-    console.log("Initial State Transaction: ", initialStateTx);
-    initialState.addTag('App-Name', packageJson.name);
-    initialState.addTag('App-Version', packageJson.version);
-    initialState.addTag('Contract-Src', contractSourceTxId);
-    initialState.addTag('Content-Type', 'application/json');
-    console.log("Tags added to initial state.");
+    initialStateTx.addTag('App-Name', packageJson.name);
+    initialStateTx.addTag('App-Version', packageJson.version);
+    initialStateTx.addTag('Contract-Src', contractSourceTxId);
+    initialStateTx.addTag('Content-Type', 'application/json');
+    console.log("Tags added to initial state transaction.");
 
     // Sign
-    await arweave.transactions.sign(initialState, wallet);
-    const initialStateTxId = initialState.id;
+    await arweave.transactions.sign(initialStateTx, wallet);
+    const initialStateTxId = initialStateTx.id;
     console.log("Initial State Transaction Id: " + initialStateTxId);
 
     // Deploy
-    await arweave.transactions.post(initialState);
+    await arweave.transactions.post(initialStateTx);
 }
 createContract();

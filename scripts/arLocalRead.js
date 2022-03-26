@@ -16,13 +16,8 @@ const arweave = Arweave.init({
  *  Place the contract's default transaction here.
  *  Read the README to learn how to use this script with npm.
  */
-let intialStateTx = "ufqZcAEgg_i8xFR2Wf1n1yLZXJ-fOwgAMMuKxYcrsCc";
+let intialStateTx = "IVfYQHaObH0U7WzxB8xcuGio7wqmPuxH0OmH0zi6eAQ";
 if(process.env.npm_config_tx != null) intialStateTx = process.env.npm_config_tx;
-
-/*
-Contract Source Transaction Id: _EfmT7II1VmD41eWAI3b_vnjsIJnN1-ZFWPxJWeXoLw
-Initial State Transaction Id: ufqZcAEgg_i8xFR2Wf1n1yLZXJ-fOwgAMMuKxYcrsCc
-*/
 
 async function getLatestState() {
     const latestState = await readContract(arweave, intialStateTx);

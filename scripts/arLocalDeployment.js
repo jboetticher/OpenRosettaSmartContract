@@ -6,11 +6,11 @@
 */
 
 import Arweave from 'arweave';
-import { createContract } from 'smartweave';
+import { createContract, interactWrite, readContract } from 'smartweave';
 import fs from 'fs';
 import arLocalAddTokens from "./arLocalAddTokens.js";
-import packageJson from '../package.json';
 import wallet from '../keyfile.json';
+import fetch from "node-fetch";
 
 // Arweave instance is currently pointing at ArLocal
 const arweave = Arweave.init({
@@ -31,40 +31,32 @@ const contractSource = fs.readFileSync('./src/HelloWorld/HelloWorldContract.js',
 
 
 
-async function createContract() {
+async function create() {
     // Add tokens to local address
     await arLocalAddTokens();
 
-    // Let's first create the contract transaction.
-    const contractTx = await arweave.createTransaction({ data: contractSource }, wallet);
-    contractTx.addTag('App-Name', packageJson.name);
-    contractTx.addTag('App-Version', packageJson.version);
-    contractTx.addTag('Content-Type', 'application/javascript');
-    //console.log("Tags added to initial contract transaction.");
+    const createTx = await createContract(arweave, wallet, contractSource, initialState);
+    console.log(createTx);
+    await fetch("http://localhost:1984/mine");
 
-    // Sign
-    await arweave.transactions.sign(contractTx, wallet);
-    const contractSourceTxId = contractTx.id;
-    console.log("Contract Source Transaction Id: " + contractSourceTxId);
+    /*
+    await fetch("http://localhost:1984/mine");
+    let latestState = await readContract(arweave, createTx);
+    console.log(latestState);
 
-    // Deploy the contract source
-    await arweave.transactions.post(contractTx);
-    //console.log("Contract transaction posted.");
+    const input = { function: 'increment'};
+    let writeId = await interactWrite(arweave, wallet, createTx, input);
+    console.log(writeId);
 
-    // Now, let's create the Initial State transaction
-    const initialStateTx = await arweave.createTransaction({ data: initialState }, wallet);
-    initialStateTx.addTag('App-Name', packageJson.name);
-    initialStateTx.addTag('App-Version', packageJson.version);
-    initialStateTx.addTag('Contract-Src', contractSourceTxId);
-    initialStateTx.addTag('Content-Type', 'application/json');
-    //console.log("Tags added to initial state transaction.");
+    await fetch("http://localhost:1984/mine");
 
-    // Sign
-    await arweave.transactions.sign(initialStateTx, wallet);
-    const initialStateTxId = initialStateTx.id;
-    console.log("Initial State Transaction Id: " + initialStateTxId);
+    writeId = await interactWrite(arweave, wallet, createTx, input);
+    console.log(writeId);
 
-    // Deploy
-    await arweave.transactions.post(initialStateTx);
+    */
+
+    let latestState = await readContract(arweave, createTx);
+    console.log("Initial State:")
+    console.log(latestState);
 }
-createContract();
+create();

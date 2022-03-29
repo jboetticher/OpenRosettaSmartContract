@@ -1,4 +1,4 @@
-import { readContract } from 'smartweave';
+import { readContract } from 'redstone-smartweave';
 import Arweave from 'arweave';
 // https://cedriking.medium.com/lets-buidl-smartweave-contracts-2-16c904a8692d
 

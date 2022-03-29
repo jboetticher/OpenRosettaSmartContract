@@ -6,7 +6,7 @@
 */
 
 import Arweave from 'arweave';
-import { createContract, interactWrite, readContract } from 'smartweave';
+import { createContract, interactWrite, readContract } from 'redstone-smartweave';
 import fs from 'fs';
 import arLocalAddTokens from "./arLocalAddTokens.js";
 import wallet from '../keyfile.json';

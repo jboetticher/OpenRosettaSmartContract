@@ -1,4 +1,4 @@
-import { interactWrite } from 'smartweave';
+import { interactWrite } from 'redstone-smartweave';
 import Arweave from 'arweave';
 import wallet from '../keyfile.json';
 import fetch from "node-fetch";

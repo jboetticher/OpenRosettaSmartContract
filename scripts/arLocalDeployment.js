@@ -1,12 +1,11 @@
 /* 
- *  This is a script that can deploy a SmartWeave contract. You could simply use 
- *  the SmartWeave CLI instead.
+ *  This is a script that can deploy a SmartWeave contract.
  * 
  *  @TODO: replace contractSource and initialState with actual data.
 */
 
 import Arweave from 'arweave';
-import { createContract, interactWrite, readContract } from 'redstone-smartweave';
+import { SmartWeaveNodeFactory } from 'redstone-smartweave';
 import fs from 'fs';
 import arLocalAddTokens from "./arLocalAddTokens.js";
 import wallet from '../keyfile.json';
@@ -18,8 +17,10 @@ const arweave = Arweave.init({
     protocol: 'http',
     port: 1984
 });
+const mine = () => arweave.api.get("mine");
 
-
+// Create a SmartWeave client
+const sw = SmartWeaveNodeFactory.memCached(arweave);
 
 /**
  *  If you want to create a contract, replace these sources with your proper contract
@@ -29,34 +30,30 @@ const arweave = Arweave.init({
 const initialState = fs.readFileSync('./src/HelloWorld/HelloWorldState.json', 'utf8');
 const contractSource = fs.readFileSync('./src/HelloWorld/HelloWorldContract.js', 'utf8');
 
-
-
 async function create() {
     // Add tokens to local address
     await arLocalAddTokens();
 
-    const createTx = await createContract(arweave, wallet, contractSource, initialState);
-    console.log(createTx);
-    await fetch("http://localhost:1984/mine");
+    // Deploy contract
+    const contractTx = await sw.createContract.deploy({
+        wallet, 
+        src: contractSource, 
+        initState: initialState
+    });
+    console.log("Contract Transaction: " + contractTx);
+    await mine();
 
-    /*
-    await fetch("http://localhost:1984/mine");
-    let latestState = await readContract(arweave, createTx);
-    console.log(latestState);
+    // Creates instance of the contract
+    const contract = sw
+        .contract(contractTx)
+        .connect(wallet)
+        .setEvaluationOptions({
+            waitForConfirmation: true
+        });
 
-    const input = { function: 'increment'};
-    let writeId = await interactWrite(arweave, wallet, createTx, input);
-    console.log(writeId);
-
-    await fetch("http://localhost:1984/mine");
-
-    writeId = await interactWrite(arweave, wallet, createTx, input);
-    console.log(writeId);
-
-    */
-
-    let latestState = await readContract(arweave, createTx);
+    // Read from the current state
+    const { state, validity } = await contract.readState();
     console.log("Initial State:")
-    console.log(latestState);
+    console.log(state);
 }
 create();

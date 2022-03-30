@@ -1,6 +1,6 @@
-import { readContract } from 'redstone-smartweave';
+import { SmartWeaveNodeFactory } from 'redstone-smartweave';
 import Arweave from 'arweave';
-// https://cedriking.medium.com/lets-buidl-smartweave-contracts-2-16c904a8692d
+import wallet from '../keyfile.json';
 
 // Arweave instance is currently pointing at ArLocal
 const arweave = Arweave.init({
@@ -8,7 +8,7 @@ const arweave = Arweave.init({
     protocol: 'http',
     port: 1984
 });
-
+const smartweave = SmartWeaveNodeFactory.memCached(arweave);
 
 
 
@@ -19,8 +19,19 @@ const arweave = Arweave.init({
 let intialStateTx = "IVfYQHaObH0U7WzxB8xcuGio7wqmPuxH0OmH0zi6eAQ";
 if(process.env.npm_config_tx != null) intialStateTx = process.env.npm_config_tx;
 
+
+
+// Connect to a preexisting smart contract
+const contract = smartweave
+    .contract(intialStateTx)
+    .connect(wallet)
+    .setEvaluationOptions({
+        // All writes will wait for the transaction to be confirmed
+        waitForConfirmation: true
+    });
+
 async function getLatestState() {
-    const latestState = await readContract(arweave, intialStateTx);
-    console.log(latestState);
+    const { state, validity } = await contract.readState();
+    console.log(state);
 }
 getLatestState();

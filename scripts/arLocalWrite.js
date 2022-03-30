@@ -1,4 +1,4 @@
-import { interactWrite } from 'redstone-smartweave';
+import { SmartWeaveNodeFactory } from 'redstone-smartweave';
 import Arweave from 'arweave';
 import wallet from '../keyfile.json';
 import fetch from "node-fetch";
@@ -9,6 +9,7 @@ const arweave = Arweave.init({
     protocol: 'http',
     port: 1984
 });
+const smartweave = SmartWeaveNodeFactory.memCached(arweave);
 
 
 
@@ -17,21 +18,37 @@ const arweave = Arweave.init({
  *  Recall that contracts require a `handle(state, action)`. 
  *  Read the README to learn how to use this script with npm.
  */
-const input = {
-    function: process.env.npm_config_function ?? 'increment'
-};
+const func = process.env.npm_config_function ?? 'increment';
+
+/**
+ * The data that we add to our contract's function.
+ */
+const data = { };
 
 /**
  *  Place the contract's default transaction here.
  *  Read the README to learn how to use this script with npm.
  */
-let contractInitialStateTx = "IVfYQHaObH0U7WzxB8xcuGio7wqmPuxH0OmH0zi6eAQ";
-if(process.env.npm_config_tx != null) contractInitialStateTx = process.env.npm_config_tx;
+let contractTx = "IVfYQHaObH0U7WzxB8xcuGio7wqmPuxH0OmH0zi6eAQ";
+if(process.env.npm_config_tx != null) contractTx = process.env.npm_config_tx;
+
+
+
+// Connect to a preexisting smart contract
+const contract = smartweave
+    .contract(contractTx)
+    .connect(wallet)
+    .setEvaluationOptions({
+        // All writes will wait for the transaction to be confirmed
+        waitForConfirmation: true
+    });
 
 async function update() {
-    // `interactWrite` will return the transaction ID.
-    const txid = await interactWrite(arweave, wallet, contractInitialStateTx, input);
-    console.log("Write finshed with transaction: " + txid);
+    const details = await contract.writeInteraction({
+        function: func,
+        data: data
+    });
     await fetch("http://localhost:1984/mine");
+    return details;
 }
 update();

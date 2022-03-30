@@ -21,15 +21,6 @@ const contract = smartweave
         waitForConfirmation: true
     });
 
-// Create a smart contract (similar to original SmartWeave deployment)
-async function create() {
-    const contractSource = fs.readFileSync('./src/HelloWorld/HelloWorldContract.js', 'utf8');
-    const initialState = fs.readFileSync('./src/HelloWorld/HelloWorldState.json', 'utf8');
-    const createTx = await smartweave.createContract(arweave, wallet, contractSource, initialState);
-    console.log(createTx);
-    await fetch("http://localhost:1984/mine");
-}
-
 // Read state from contract
 async function readState(contract) {
     const { state, validity } = await contract.readState();

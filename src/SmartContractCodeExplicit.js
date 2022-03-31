@@ -20,7 +20,7 @@ const rosettalib = {
             rosetta: 0,
             knowledge: amount
         }
-    }
+    },
     linearRandomGenerator: (x0, a, b, m) => {
         x0 = (a * x0 + b) % m
         return x0
@@ -37,7 +37,7 @@ const rosettalib = {
         if (tx instanceof 'string') {
             return this.loadTransactionToJson(tx)
         }
-        return tx
+        return tx;
     },
     getChunkOfBlocks: async function(blocks, fr, to) {
         const slice = blocks.slice(fr, to)
@@ -253,6 +253,7 @@ const rosettalib = {
             state.nextupdate = Math.min(state.nextmaintenance, state.nextmine)
         }
     },
+    
     mainfunctions: {
         transfer: function (state, action) {
             const fr = action.caller

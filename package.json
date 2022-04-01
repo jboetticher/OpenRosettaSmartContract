@@ -2,8 +2,11 @@
   "name": "openrosettasmartcontract",
   "version": "0.1.0",
   "description": "Smart contracts that govern the Open Rosetta project.",
-  "main": "MainSmartContract.js",
   "scripts": {
+    "build": "npm run clean && npm run build-ts && npm run cp",
+    "build-ts": "node ./scripts/build.js",
+    "clean": "rimraf ./dist",
+    "cp": "copyfiles -u 1 ./src/**/*.json dist",
     "arlocal": "npx arlocal",
     "deploylocal": "node --experimental-json-modules ./scripts/arLocalDeployment.js",
     "readlocal": "node --experimental-json-modules ./scripts/arLocalRead.js",
@@ -28,11 +31,19 @@
   "homepage": "https://github.com/TheOpenRosetta/OpenRosettaSmartContract#readme",
   "dependencies": {
     "arweave": "^1.10.23",
-    "redstone-smartweave": "^0.4.53"
+    "babel-jest": "^27.5.1",
+    "redstone-smartweave": "^0.4.53",
+    "rimraf": "^3.0.2",
+    "typescript": "^4.6.3"
   },
   "devDependencies": {
     "arlocal": "^1.1.29",
+    "copyfiles": "^2.4.1",
+    "esbuild": "^0.14.29",
     "fs": "^0.0.1-security",
-    "node-fetch": "^3.2.3"
+    "jest": "^27.5.1",
+    "node-fetch": "^3.2.3",
+    "replace-in-file": "^6.3.2",
+    "ts-jest": "^27.1.4"
   }
 }

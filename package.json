@@ -8,9 +8,9 @@
     "clean": "rimraf ./dist",
     "cp": "copyfiles -u 1 ./src/**/*.json dist",
     "arlocal": "npx arlocal",
-    "deploylocal": "node --experimental-json-modules ./scripts/arLocalDeployment.js",
-    "readlocal": "node --experimental-json-modules ./scripts/arLocalRead.js",
-    "writelocal": "node --experimental-json-modules ./scripts/arLocalWrite.js"
+    "deploylocal": "node --experimental-json-modules ./scripts/basicArLocal/arLocalDeployment.js",
+    "readlocal": "node --experimental-json-modules ./scripts/basicArLocal/arLocalRead.js",
+    "writelocal": "node --experimental-json-modules ./scripts/basicArLocal/arLocalWrite.js"
   },
   "repository": {
     "type": "git",

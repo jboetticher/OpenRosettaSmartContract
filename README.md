@@ -41,20 +41,3 @@ also ought to have a second file named `address.json` in the same directory:
 { "address": "YOUR WALLET ADDRESS" }
 ```
 
-## Testing With ArLocal
-There are a mixture of scripts to use within the scripts folder to help test the smart 
-contracts locally. Before using these scripts, you should run arlocal with either `npx arlocal`
-or `npm run arlocal`.   
-
-You can edit `arLocalDeploy.js` to specify the contract file you want to deploy locally. Run
-with `npm run deploylocal`.  
-
-You can edit `arLocalRead.js` to specify the state transaction you want to read from. Run with
-`npm run readlocal`. Alternatively, you can specify the transaction in the console with 
-`npm run readlocal --tx=CONTRACT_TRANSACTION_ID`.  
-
-You can edit `arLocalWrite.js` to specify the contract you wish to write to and which function 
-you wish to call. Run with `npm run writelocal`. Alternatively, you can specify with:
-```
-npm run writelocal --function=FUNCTION_NAME --tx=CONTRACT_TRANSACTION_ID
-```

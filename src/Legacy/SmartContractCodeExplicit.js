@@ -114,7 +114,7 @@ const rosettalib = {
             } 
             remove_locked(wallet)
             Object.values(wallet.knowledgetokens).forEach((knowledgewallet) => {
-                Object.entries(knowledgewallet.locked).forEach(([until, value]) {
+                Object.entries(knowledgewallet.locked).forEach(([until, value]) => {
                     wallet.amount += value.rosetta
                     knowledgewallet.amount += value.knowledge
                     delete knowledgewallet.locked[until]
@@ -131,8 +131,9 @@ const rosettalib = {
         })
         return result
     },
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     hashtonumber: function (hash) {
-
+        // Unfinished
     },
     juryselect: function (state, trial) {
         let jurypool = this.getJuryPool(state)
@@ -477,6 +478,7 @@ const rosettalib = {
                     state.config.publicationduration).toString()] = rosettalib.defaultlockedknowledge(knowledge.reservedtokens[authorid])
             return {state : state}
         },
+        // TODO: change onboard to remove administrator onboard. Anyone should be able to make their own wallet.
         onboard: function(state, action) {
             const wallet = action.caller
             if (!(wallet in state.administrators)) {
@@ -490,6 +492,7 @@ const rosettalib = {
             return {state : state}
         },
         proposeChange: function(state, action) {
+            // TODO: make it so that if there is a current change proposal, it fails
             if (!state.administrators[action.caller].canvote) {
                 throw new ContractError("Caller does not have the authority to propose changes")
             }
@@ -535,7 +538,7 @@ const rosettalib = {
                 if ('removedadmins' in state.proposeChange) {
                     state.proposeChange.newadmins.forEach((v) => {
                         delete state.administrators[v.voter]
-                    }
+                    })
                 }
                 delete state.proposeChange
             } else if (nayvotes > requiredvotes) {

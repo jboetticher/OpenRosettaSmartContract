@@ -1,5 +1,5 @@
 const rosettalib = {
-    defaultWallet: function() {
+    defaultWallet: function () {
         return {
             amount: 0,
             staked: 0,
@@ -9,31 +9,31 @@ const rosettalib = {
             trials: []
         }
     },
-    defaultKnowledgeWallet: function() {
+    defaultKnowledgeWallet: function () {
         return {
             amount: 0,
             locked: []
         }
     },
-    loadTransactionToJson: async function(tx) {
+    loadTransactionToJson: async function (tx) {
         for (let i = 0; i < 10; i++) {
             try {
-                return await JSON.parse(Smartweave.unsafeclient.transactions.getData(tx, {decode: true, string: true}))
-            } catch (err) {}
+                return await JSON.parse(Smartweave.unsafeclient.transactions.getData(tx, { decode: true, string: true }))
+            } catch (err) { }
         }
         throw new ContractError(`unable to load ${tx}`)
     },
-    loadBlock: async function(tx) {
+    loadBlock: async function (tx) {
         if (tx instanceof 'string') {
             return this.loadTransactionToJson(tx)
         }
         return tx
     },
-    getChunkOfBlocks: async function(blocks, fr, to) {
+    getChunkOfBlocks: async function (blocks, fr, to) {
         const slice = blocks.slice(fr, to)
         return await Promise.all(slice.map(this.loadBlock))
     },
-    getValuesInIndex: async function(tx, indexs, indexName) {
+    getValuesInIndex: async function (tx, indexs, indexName) {
         const members = new Map()
         const memberAll = await this.loadTransactionToJson(tx)
         memberAll.forEach((json) => {
@@ -43,7 +43,7 @@ const rosettalib = {
         })
         return members
     },
-    queryIndex: async function(indexTx, indexs, indexName) {
+    queryIndex: async function (indexTx, indexs, indexName) {
         const indexJson = await this.loadTransactionToJson(indexTx)
         indexs.sort()
         const toload = []
@@ -85,16 +85,16 @@ const rosettalib = {
         }
         return values
     },
-    getInitialWallet: async function(state, wallets) {
+    getInitialWallet: async function (state, wallets) {
         return this.queryIndex(state.initialWalletTx, wallets, "wallet")
     },
-    getInitialTrial: async function(state, trials) {
+    getInitialTrial: async function (state, trials) {
         return this.queryIndex(state.initialTrialTx, trials, "trialid")
     },
-    getPaperState: async function(state, papers) {
+    getPaperState: async function (state, papers) {
         return this.queryIndex(state.initialPaperTx, papers, "paperid")
     },
-    updateWalletFromTransfer: function(transfer, wallet, isoutgoing) {
+    updateWalletFromTransfer: function (transfer, wallet, isoutgoing) {
         const amount = isoutgoing ? -transfer.amount : transfer.amount
         if (transfer.type == 'rosetta') {
             wallet.amount += amount
@@ -106,7 +106,7 @@ const rosettalib = {
             }
         }
     },
-    updateWalletPublish: function(publish, wallets) {
+    updateWalletPublish: function (publish, wallets) {
         publish.knowledgetokens.forEach((element) => {
             if ((element.authorid instanceof 'string') && (element.authorid in wallets)) {
                 const wallet = wallets[element.authorid]
@@ -116,7 +116,7 @@ const rosettalib = {
                 wallet.knowledgetokens[paperid].locked.push({
                     amount: element.amount,
                     until: element.locked
-                }) 
+                })
             }
         })
         publish.stakes.forEach((stake) => {
@@ -130,7 +130,7 @@ const rosettalib = {
             }
         })
     },
-    updateWalletClaim: async function(claim, wallet, currentblocknumber, state) {
+    updateWalletClaim: async function (claim, wallet, currentblocknumber, state) {
         const paperidstring = claim.paperid.toString()
         if (!(claim.paperid in wallet.knowledgetokens)) {
             wallet.knowledgetokens[paperidstring] = this.defaultKnowledgeWallet()
@@ -146,10 +146,10 @@ const rosettalib = {
             }
         }
     },
-    mineImpactScore: async function(papersMap, indexTx) {
+    mineImpactScore: async function (papersMap, indexTx) {
         const impactScores = await this.queryIndex(indexTx, papersMap.keys(), "paperid")
     },
-    updateWalletInformation: async function(block, wallets, trials, currentblocknumber, state) {
+    updateWalletInformation: async function (block, wallets, trials, currentblocknumber, state) {
         //This function will update most of the information with respect to wallets to the wallets specified.
         //It does not update fees received for jury particapation. But does return the trials involved for later update.
         block.transfers.forEach((transfer) => {
@@ -196,30 +196,31 @@ const rosettalib = {
                 wallets[appeal.wallet].amount -= appeal.fee
             }
         })
-        block.impactscoreupdate.forEach((impactscoreupdate)) {
+        block.impactscoreupdate.forEach(impactscoreupdate => {
             const paperidtowallets = new Map()
             wallets.values().forEach((wallet) => {
-                wallet.knowledgetokens.keys().forEach((paperid)) {
+                wallet.knowledgetokens.keys().forEach(paperid => {
                     const paperidint = paperid.parse()
                     if (!paperidtowallets.has(paperidint)) {
                         paperidtowallets[paperidint] = []
                     }
                     paperidtowallets[paperidint].push(wallet)
                 }
+                )
             })
-        }
+        })
     },
-    getWalletDataFromBlock: async function(currentblocknumber, block, wallets) {
+    getWalletDataFromBlock: async function (currentblocknumber, block, wallets) {
         block.transfers
     },
     getWalletData: async function (state, action) {
-        
+
     },
-    verifyBlock: async function (){},
+    verifyBlock: async function () { },
     mainfunctions: {
-        getBalances: async function(state, action) {},
-        addToBlock: async function(state, action) {},
-        registerBlock: async function(state, action) {},
-        registerSnapShot: async function(state, action) {}
+        getBalances: async function (state, action) { },
+        addToBlock: async function (state, action) { },
+        registerBlock: async function (state, action) { },
+        registerSnapShot: async function (state, action) { }
     }
 }

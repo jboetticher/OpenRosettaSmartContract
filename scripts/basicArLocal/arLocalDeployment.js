@@ -33,7 +33,7 @@ const contractSource = fs.readFileSync('./src/HelloWorld/HelloWorldContract.js',
 
 async function create() {
     // Add tokens to local address
-    await arLocalAddTokens();
+    await arLocalAddTokens(arweave, wallet);
 
     // Deploy contract
     const contractTx = await sw.createContract.deploy({

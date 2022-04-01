@@ -35,9 +35,5 @@ having to deploy them by spending Arweave crypto. The CLI tool to start it is `n
 
 ## Deploying Contracts
 To deploy to Arweave with SmartWeave, you will need your keyfile for your account. The
-project is set up to use a keyfile named `keyfile.json`, stored in the main directory. You
-also ought to have a second file named `address.json` in the same directory:  
-```
-{ "address": "YOUR WALLET ADDRESS" }
-```
+project is set up to use a keyfile named `keyfile.json`, stored in the main directory.
 

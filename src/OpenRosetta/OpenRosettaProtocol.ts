@@ -5,6 +5,7 @@
  * @param {*} action 
  * @returns 
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function handle(state, action) {
     
 }

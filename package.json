@@ -11,7 +11,8 @@
     "deploylocal": "node --experimental-json-modules ./scripts/basicArLocal/arLocalDeployment.js",
     "readlocal": "node --experimental-json-modules ./scripts/basicArLocal/arLocalRead.js",
     "writelocal": "node --experimental-json-modules ./scripts/basicArLocal/arLocalWrite.js",
-    "fixling": "eslint --fix"
+    "lint": "npx eslint . --ext .ts",
+    "lint:fix": "npx eslint . --ext .ts --fix"
   },
   "repository": {
     "type": "git",

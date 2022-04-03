@@ -3,6 +3,7 @@ import replace from 'replace-in-file';
 
 // Add the contracts that you want to build here.
 const contracts = [
+    '/OpenRosetta/OpenRosettaContract.ts',
     '/HelloWorld/HelloWorldContract.ts'
 ];
 

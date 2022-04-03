@@ -1,5 +1,8 @@
 import { SmartWeaveGlobal } from "redstone-smartweave";
-declare const SmartWeave: SmartWeaveGlobal;
+import UtilsHandler from "./UtilsHandler";
+
+//declare const SmartWeave: SmartWeaveGlobal;
+const utils = new UtilsHandler();
 
 /**
  * Arweave smart contracts must start with a handle function. 
@@ -9,10 +12,17 @@ declare const SmartWeave: SmartWeaveGlobal;
  * @returns 
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-async function handle(state, action) {
+export async function handle(state, action) {
 
-    return SmartWeave.block.height;
+
+
+    switch (action.function) {
+
+    }
 }
+
+
+
 
 // Account handler
 // Validation handler
@@ -23,8 +33,3 @@ async function handle(state, action) {
  *      Author contribution + management
  *  Purchase
  */
-
-
-class AuthorHandler {
-    
-}

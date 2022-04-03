@@ -1,4 +1,8 @@
 const rosettalib = {
+    /**
+     * Scaffolds the default wallet object.
+     * See examplewalletstate.json
+     */
     defaultWallet: function() {
         return {
             amount: 0,
@@ -9,22 +13,41 @@ const rosettalib = {
             trials: []
         }
     },
+
+    /**
+     * Scaffolds the default knowledge wallet, within the wallet object.
+     * See examplewalletstate.json
+     */
     defaultKnowledgeWallet: function() {
         return {
             amount: 0,
             locked: []
         }
     },
+
+    /**
+     * Scaffolds a locked knowledge object, within the knowledge wallet object.
+     * See examplewalletstate.json
+     */
     defaultlockedknowledge: function(amount) {
         return {
             rosetta: 0,
             knowledge: amount
         }
     },
+
+    /**
+     * Pseudo-random code that generates a number.
+     */
     linearRandomGenerator: (x0, a, b, m) => {
         x0 = (a * x0 + b) % m
         return x0
     },
+
+    /**
+     * Uses SmartWeave to get various data about a transaction.
+     * @param {*} tx Transaction id.
+     */
     loadTransactionToJson: async function(tx) {
         for (let i = 0; i < 10; i++) {
             try {
@@ -33,16 +56,29 @@ const rosettalib = {
         }
         throw new ContractError(`unable to load ${tx}`)
     },
+
+    /**
+     * "Safe" version of loadTransactionToJson: checks for tx being a string.
+     * In this instance, the transaction = new block.
+     */
     loadBlock: async function(tx) {
         if (tx instanceof 'string') {
             return this.loadTransactionToJson(tx)
         }
         return tx;
     },
+
+    /**
+     * A batch request of loadBlock.
+     */
     getChunkOfBlocks: async function(blocks, fr, to) {
         const slice = blocks.slice(fr, to)
         return await Promise.all(slice.map(this.loadBlock))
     },
+
+    /**
+     * A helper function that gets a specific element (indexName) from a transaction's data.
+     */
     getValuesInIndex: async function(tx, indexs, indexName) {
         const members = new Map()
         const memberAll = await this.loadTransactionToJson(tx)
@@ -53,6 +89,8 @@ const rosettalib = {
         })
         return members
     },
+
+
     queryIndex: async function(indexTx, indexs, indexName) {
         const indexJson = await this.loadTransactionToJson(indexTx)
         indexs.sort()
@@ -95,6 +133,11 @@ const rosettalib = {
         }
         return values
     },
+
+    /**
+     * Frees all of the staked value within all papers within a wallet.
+     * See examplewalletstate.json
+     */
     freeLocked: async function (state, ts){
         Object.values(state.wallets).forEach((wallet) => {
             Object.entries(wallet.paperstakes).forEach(([paperid, stake]) => {
@@ -122,6 +165,10 @@ const rosettalib = {
             })
         })
     },
+    
+    /**
+     * Returns all possible members of the jury pool.
+     */
     getJuryPool: function(state) {
         const result = []
         Object.entries(state.wallets).forEach(([address, wallet]) => {
@@ -131,10 +178,15 @@ const rosettalib = {
         })
         return result
     },
+    
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     hashtonumber: function (hash) {
         // Unfinished
     },
+    
+    /**
+     * Selects and returns a psuedorandom number of jurors (addresses).
+     */
     juryselect: function (state, trial) {
         let jurypool = this.getJuryPool(state)
         //ensure that the ordering of jurypool is deterministic
@@ -154,7 +206,12 @@ const rosettalib = {
         selectedJury.sort()
         return selectedJury
     },
+    
+    /**
+     * Progresses a trial to the next stage.
+     */
     progresstrial: function (state, trial) {
+        // Where did "ts" come from? I don't see where it's being initialized
         if (ts < trial.until) {
             switch(trial.currentstate) {
                 case "open":
@@ -209,6 +266,11 @@ const rosettalib = {
             }
         }
     },
+    
+    /**
+     * Adds rosetta to every wallet registered. Uses impact score in its calculation.
+     * https://rosetta-2.gitbook.io/rosetta-docs/rosetta-economy
+     */
     mineRosetta: async function (state) {
         let totalimpactscore = 0
         Object.values(state.knowledge).forEach((knowledge) => {
@@ -233,6 +295,8 @@ const rosettalib = {
         })
         state.totalrosetta += newmint
     },
+
+
     updateState: function(state) {
         while (state.nextupdate <= SmartWeave.block.timestamp) {
             if (state.nextmine < state.nextmaintenance) {
@@ -255,9 +319,15 @@ const rosettalib = {
         }
     },
     
+    // All of the functions within "mainfunctions" are the public actions that are available to
+    // users calling the contract.
     mainfunctions: {
+        /**
+         * Allows a user to transfer rosetta or knowledge tokens to another wallet.
+         * NOTE: transferring knowledge tokens isn't implemented, even if there is a "type" input
+         */
         transfer: function (state, action) {
-            const fr = action.caller
+            const fr = action.caller // rename this to "from"
             const to = action.input.to
             const amount = action.input.amount
             const type = action.input.type
@@ -284,6 +354,10 @@ const rosettalib = {
             towallet.amount += amount
             return {state: state}
         },
+
+        /**
+         * Returns the information of a wallet to a user.
+         */
         getBalance: function(state, action) {
             const wallet = "wallet" in action.input ? action.input.wallet : action.caller
             if (wallet in state.wallets) {
@@ -291,6 +365,11 @@ const rosettalib = {
             }
             throw new ContractError(`${wallet} does not exist.`)
         },
+
+        /**
+         * Allows a user to stake rosetta.
+         * NOTE: I don't think staking is set up correctly. It should be staked on validation or papers themselves, right?
+         */
         stakeRosetta: function(state, action) {
             const wallet = action.caller
             if (wallet in state.wallets) {
@@ -304,6 +383,11 @@ const rosettalib = {
             }
             throw new ContractError(`${wallet} does not exist.`)
         },
+
+        /**
+         * Allows a user to unstake rosetta.
+         * NOTE: see note on stakeRosetta function.
+         */
         unstakeRosetta: function(state, action) {
             const wallet = action.caller
             if (wallet in state.wallets) {
@@ -317,6 +401,11 @@ const rosettalib = {
             }
             throw new ContractError(`${wallet} does not exist.`)
         },
+
+        /**
+         * Creates a trial for a specific paperId.
+         * See exampletrialstate.json
+         */
         createTrial: function(state, action) {
             const wallet = action.caller
             if (action.input.paperid.toString() in state.trials) {
@@ -349,11 +438,20 @@ const rosettalib = {
             }
             throw new ContractError(`${wallet} does not exist.`)
         },
+
+        /**
+         * I guess it allows a user to submit evidence to a trial?
+         * NOTE: not sure what evidencelist is. Not defined here or in the state examples?
+         */
         submitEvidence: function(state, action) {
             const trial = state.trials[action.input.paperid.toString()]
             evidencelist = action.input.forprosecution ? trial.prosecutionevidence : trial.defenseevidence
             return {state: state}
         },
+
+        /**
+         * Allows a juror to submit a vote on a trial.
+         */
         submitVote: function(state, action) {
             const wallet = action.caller
             const trial = state.trials[action.input.paperid.toString()]
@@ -372,6 +470,10 @@ const rosettalib = {
             })
             return {state: state}
         },
+
+        /**
+         * Allows a user to call for an appeal in a trial. Switches from openforappeal phase to deliberation.
+         */
         callAppeal: function(state, action) {
             const wallet = action.caller
             if (!(action.input.paperid.toString() in state.trials) || 
@@ -398,6 +500,10 @@ const rosettalib = {
             }
             throw new ContractError(`${wallet} does not exist.`)
         },
+
+        /**
+         * Publishes a new paper.
+         */
         publishPaper(state, action) {
             const wallet = action.caller
             if (!action.input.newpublication && !(wallet in state.administrators)) {
@@ -461,6 +567,10 @@ const rosettalib = {
             }
             return {state: state}
         },
+
+        /**
+         * Allows an admin to claim knowledge tokens on a paper.
+         */
         claimPaper: function(state, action) {
             const wallet = action.caller
             if (!(wallet in state.administrators)) {
@@ -478,7 +588,11 @@ const rosettalib = {
                     state.config.publicationduration).toString()] = rosettalib.defaultlockedknowledge(knowledge.reservedtokens[authorid])
             return {state : state}
         },
+
         // TODO: change onboard to remove administrator onboard. Anyone should be able to make their own wallet.
+        /**
+         * Adds the default wallet to an address, and gives them access to the Rosetta ecosystem.
+         */
         onboard: function(state, action) {
             const wallet = action.caller
             if (!(wallet in state.administrators)) {
@@ -491,6 +605,10 @@ const rosettalib = {
             state.wallets[newwallet] = rosettalib.defaultWallet()
             return {state : state}
         },
+
+        /**
+         * Proposes a change to the network
+         */
         proposeChange: function(state, action) {
             // TODO: make it so that if there is a current change proposal, it fails
             if (!state.administrators[action.caller].canvote) {
@@ -502,6 +620,10 @@ const rosettalib = {
             }
             return {state : state}
         },
+
+        /**
+         * Allows an admin to vote on a change to the network
+         */
         voteOnChange: function(state, action) {
             if (!state.administrators[action.caller].canvote) {
                 throw new ContractError("Caller does not have the authority to propose changes")

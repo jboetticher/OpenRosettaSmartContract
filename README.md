@@ -7,6 +7,8 @@ These are the smart contracts that govern the Open Rosetta project. They are pow
 The developer environment depends on the following tools:
 - [SmartWeave](https://github.com/ArweaveTeam/SmartWeave)
 - [ArLocal](https://github.com/textury/arlocal)
+- TypeScript
+- ESLint
 
 Install dependencies with `npm install`.
 
@@ -33,7 +35,13 @@ npm install -g smartweave
 Creates a local "gateway" server that allows us to test our SmartWeave contracts without 
 having to deploy them by spending Arweave crypto. The CLI tool to start it is `npx arlocal`.
 
+## Building
+We use TypeScript in our project to help with testing, documentation, and technical debt. 
+SmartWeave doesn't natively support TypeScript, so we must transpile TypeScript to vanilla
+JavaScript in our build script. This is handled in the build command `npm run build`. You can
+view the `build.js` script that accomplishes this in the scripts folder.
+
 ## Deploying Contracts
 To deploy to Arweave with SmartWeave, you will need your keyfile for your account. The
-project is set up to use a keyfile named `keyfile.json`, stored in the main directory.
-
+project is set up to use a keyfile named `keyfile.json`, stored in the main directory. 
+Take a look at the scripts to see how to customize your deployments.

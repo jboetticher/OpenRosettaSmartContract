@@ -238,6 +238,7 @@ const rosettalib = {
                             winners.push(vote.wallet)
                         }
                     })
+                    // not sure where jurorstake gets changed
                     const jurorpayout = (trial.jurorfees + trial.jurorstake) / winners.length
                     winners.forEach((address) => {
                         state.wallets[address].amount += jurorpayout

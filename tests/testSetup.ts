@@ -10,7 +10,7 @@ import { SmartWeave } from "redstone-smartweave/lib/types/core/SmartWeave";
 import fs from "fs";
 import path from 'path';
 
-const AR_LOCAL_PORT = 1984;
+const AR_LOCAL_PORT = 1985;
 
 /**
  * Mints a value of 1000000000000000 to a specified wallet (arlocal).

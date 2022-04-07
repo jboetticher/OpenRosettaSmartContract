@@ -37,13 +37,14 @@
     "babel-jest": "^27.5.1",
     "redstone-smartweave": "^0.4.53",
     "rimraf": "^3.0.2",
+    "sqlite3": "^5.0.2",
     "typescript": "^4.6.3"
   },
   "devDependencies": {
     "@types/jest": "^27.4.1",
     "@typescript-eslint/eslint-plugin": "^5.17.0",
     "@typescript-eslint/parser": "^5.17.0",
-    "arlocal": "^1.1.29",
+    "arlocal": "^1.1.30",
     "copyfiles": "^2.4.1",
     "esbuild": "^0.14.29",
     "eslint": "^8.12.0",

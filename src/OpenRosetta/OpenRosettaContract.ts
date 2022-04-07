@@ -28,11 +28,19 @@ export async function handle(state: NetworkState, action: ContractInput) {
     // Different switches handle all of the public facing actions.
     // Should be made up of logic classes.
     switch (func) {
+        // to: string (address), amount: number
         case "transfer": {
             const input = Inputs.TransferInput
-                .validateInput(parameters?.to, parameters.amount);
+                .validateInput(parameters.to, parameters.amount);
             walHandler.transfer(caller, input.to, input.amount);
         }
+        case "transferKnowledge": {
+            const input = Inputs.TransferKnowledgeInput
+                .validateInput(parameters?.to, parameters.amount, parameters.paperId);
+            walHandler.transferKnowledge(
+                caller, input.to, input.amount, input.paperId);
+        }
+        // TODO: knowledge token transfer
         case "createTrial": {
             // TODO: trial logic
         }

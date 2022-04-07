@@ -7,6 +7,8 @@ import Arweave from "arweave/node/common";
 import { JWKInterface } from "arweave/node/lib/wallet";
 import { LoggerFactory, SmartWeaveNodeFactory } from "redstone-smartweave";
 import { SmartWeave } from "redstone-smartweave/lib/types/core/SmartWeave";
+import fs from "fs";
+import path from 'path';
 
 const AR_LOCAL_PORT = 1984;
 
@@ -30,12 +32,25 @@ export async function mineBlock(arweave: Arweave) {
     await arweave.api.get('mine');
 }
 
+/**
+ * Generates a new Arweave wallet, returning the wallet and its address.
+ * @param arweave An arweave instance.
+ * @returns [wallet, walletAddress]; wallet is the JWKInterface, walletAddress is the address string
+ */
+ export async function createNewWallet(arweave: Arweave) {
+    const wallet = await arweave.wallets.generate();
+    const walletAddress = await arweave.wallets.getAddress(wallet);
+    await addFunds(arweave, wallet);
+    return { wallet, walletAddress };
+}
+
 export class SmartWeaveTestSuite {
     wallet: JWKInterface;
     address: string;
     arweave: Arweave;
     arlocal: ArLocal;
     smartweave: SmartWeave;
+    contractSrc: string;
 }
 
 /**
@@ -45,7 +60,7 @@ export class SmartWeaveTestSuite {
  * @returns {Promise<SmartWeaveTestSuite>} a suite of variables to test with.
  */
 export default async function testSetup(): Promise<SmartWeaveTestSuite> {
-    const arlocal: ArLocal = new ArLocal(AR_LOCAL_PORT);
+    const arlocal: ArLocal = new ArLocal(AR_LOCAL_PORT, false);
     const arweave: Arweave = Arweave.init({
         host: 'localhost',
         protocol: 'http',
@@ -59,5 +74,10 @@ export default async function testSetup(): Promise<SmartWeaveTestSuite> {
     await addFunds(arweave, wallet);
     const address: string = await arweave.wallets.jwkToAddress(wallet);
 
-    return { wallet, address, arweave, arlocal, smartweave };
+    const contractSrc = fs.readFileSync(
+        path.join(__dirname, '../dist/contract.js'),
+        'utf8'
+    );
+
+    return { wallet, address, arweave, arlocal, smartweave, contractSrc };
 }

@@ -1,10 +1,12 @@
-import { SmartWeaveGlobal } from "redstone-smartweave";
+import { SmartWeaveGlobal, RedStoneLogger } from "redstone-smartweave";
 import { NetworkState, ContractInput } from "./types/StateTypes";
 import UtilsHandler from "./UtilsHandler";
 import WalletHandler from "./WalletHandler";
 import * as Inputs from "./types/FunctionInputs";
 
 //declare const SmartWeave: SmartWeaveGlobal;
+declare const logger: RedStoneLogger;
+declare const ContractError;
 
 /**
  * Arweave smart contracts must start with a handle function. 
@@ -22,10 +24,9 @@ export async function handle(state: NetworkState, action: ContractInput) {
     const walHandler = new WalletHandler(state);
 
     const func = action.input.function;
+    logger.warn("Function being called: " + func);
     const parameters = action.input.parameters;
     const caller = action.caller;
-
-    state.potato = "potato";
 
     // Different switches handle all of the public facing actions.
     // Should be made up of logic classes.
@@ -36,16 +37,21 @@ export async function handle(state: NetworkState, action: ContractInput) {
                 .validateInput(parameters.to, parameters.amount);
             walHandler.transfer(caller, input.to, input.amount);
         }
+            return { state };
         case "transferKnowledge": {
             const input = Inputs.TransferKnowledgeInput
-                .validateInput(parameters?.to, parameters.amount, parameters.paperId);
+                .validateInput(parameters.to, parameters.amount, parameters.paperId);
             walHandler.transferKnowledge(
                 caller, input.to, input.amount, input.paperId);
         }
+            return { state };
         // TODO: knowledge token transfer
         case "createTrial": {
             // TODO: trial logic
+            break;
         }
+        default:
+            throw ContractError("Function is not defined.");
     }
 
     return { state };

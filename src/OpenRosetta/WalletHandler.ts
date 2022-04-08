@@ -1,5 +1,8 @@
+import { RedStoneLogger } from "redstone-smartweave";
 import { NetworkState, RosettaWallet } from "./types/StateTypes";
 declare const ContractError;
+
+declare const logger: RedStoneLogger;
 
 /**
  * Handles all of the wallet logic.
@@ -23,8 +26,8 @@ export default class WalletHandler {
         if (!(to in this.state.wallets))
             throw new ContractError(`Wallet for ${to} does not exist`);
 
-        const frwallet = this.state.wallets[from];
-        const towallet = this.state.wallets[to];
+        const frwallet: RosettaWallet = this.state.wallets[from];
+        const towallet: RosettaWallet = this.state.wallets[to];
 
         if (frwallet.amount < amount)
             throw new ContractError(`${from} does not have enough rosetta.`);

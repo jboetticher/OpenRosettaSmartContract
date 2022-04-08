@@ -68,7 +68,7 @@ export default async function testSetup(): Promise<SmartWeaveTestSuite> {
         port: AR_LOCAL_PORT
     });
 
-    LoggerFactory.INST.logLevel('error');
+    LoggerFactory.INST.logLevel("warn");
 
     const smartweave: SmartWeave = SmartWeaveNodeFactory.memCached(arweave);
     const wallet: JWKInterface = await arweave.wallets.generate();

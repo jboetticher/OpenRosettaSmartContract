@@ -15,17 +15,31 @@ export type ContractInput = {
 
 /**Data that encompasses the entire network's state. */
 export type NetworkState = {
-    /**
-     * Total amount of rosetta mined in the network.
-     */
+    /**Total amount of rosetta mined in the network.*/
     totalRosetta: number;
+
+    /**
+     * An array of all administrator configurations on the network.
+     * The key of the array is each administrator's wallet.
+     */
+    administrators: AdministratorState[];
 
     /**
      * An array of all wallets that hold or have held rosetta related tokens.
      * The key of the array is the address.
      */
     wallets: RosettaWallet[];
-    potato: string;
+
+    /**
+     * An array of all of the papers published.
+     * The key of the array is the paper id.
+     */
+    papers: PaperState[];
+}
+
+/**A type that represents an administrator's configuration. */
+export type AdministratorState = {
+    canVote: boolean;
 }
 
 /**A wallet that holds rosetta and knowledge tokens. */
@@ -68,4 +82,21 @@ export type PaperStake = {
 
     /**When the rosetta is unlocked from the paper. */
     until: number
+}
+
+/**A type that represents all information about a published paper. */
+export type PaperState = {
+    /**True if the paper has been invalidated by a tribunal. */
+    invalidated: boolean;
+
+    /** ??? */
+    stakingWallet: string;
+
+    impactScore: number;
+
+    falsificationPool: number;
+
+    replicationPool: Array<number>;
+
+    replicationPaperToken: number;
 }

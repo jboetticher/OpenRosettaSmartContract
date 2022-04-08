@@ -25,6 +25,8 @@ export async function handle(state: NetworkState, action: ContractInput) {
     const parameters = action.input.parameters;
     const caller = action.caller;
 
+    state.potato = "potato";
+
     // Different switches handle all of the public facing actions.
     // Should be made up of logic classes.
     switch (func) {

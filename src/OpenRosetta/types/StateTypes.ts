@@ -24,7 +24,8 @@ export type NetworkState = {
      * An array of all wallets that hold or have held rosetta related tokens.
      * The key of the array is the address.
      */
-    wallets: RosettaWallet[]
+    wallets: RosettaWallet[];
+    potato: string;
 }
 
 /**A wallet that holds rosetta and knowledge tokens. */

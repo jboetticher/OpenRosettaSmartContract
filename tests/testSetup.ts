@@ -26,7 +26,7 @@ export async function addFunds(arweave: Arweave, wallet: JWKInterface) {
 /**
  * Mines a block in the arweave instance provided (arlocal).
  * @param arweave The arweave instance to interact with.
- * @author @asiaziola
+ * @author asiaziola
  */
 export async function mineBlock(arweave: Arweave) {
     await arweave.api.get('mine');
@@ -61,6 +61,7 @@ export class SmartWeaveTestSuite {
  */
 export default async function testSetup(): Promise<SmartWeaveTestSuite> {
     const arlocal: ArLocal = new ArLocal(AR_LOCAL_PORT, false);
+    await arlocal.start();
     const arweave: Arweave = Arweave.init({
         host: 'localhost',
         protocol: 'http',
@@ -75,7 +76,7 @@ export default async function testSetup(): Promise<SmartWeaveTestSuite> {
     const address: string = await arweave.wallets.jwkToAddress(wallet);
 
     const contractSrc = fs.readFileSync(
-        path.join(__dirname, '../dist/contract.js'),
+        path.join(__dirname, '../dist/OpenRosetta/OpenRosettaContract.js'),
         'utf8'
     );
 

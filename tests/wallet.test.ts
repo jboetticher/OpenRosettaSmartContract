@@ -32,7 +32,7 @@ describe('Wallet Interactions', () => {
         return contract;
     }
 
-    it('should allow two users to transfer rosetta.', async () => {
+    it('should allow two users to transfer rosetta.', async () => {        
         // Create two wallets.
         const newWallets: ({ wallet: JWKInterface; walletAddress: string; })[] = [];
         for (let i = 0; i < 2; i++) newWallets.push(await createNewWallet(arweave));
@@ -46,7 +46,7 @@ describe('Wallet Interactions', () => {
         });
 
         // Attempt to transfer rosetta.
-        contract.connect(walletBalances[0].wallet);
+        contract.connect(newWallets[0].wallet);
         await contract.writeInteraction({
             function: 'transfer',
             parameters: {
@@ -57,7 +57,7 @@ describe('Wallet Interactions', () => {
         await mineBlock(arweave);
 
         // View contract state & verify.
-        const state: any = await contract.readState();
+        const { state }: any = await contract.readState();
         console.log(state);
         expect(state.wallets[newWallets[0].walletAddress]).toEqual(500);
         expect(state.wallets[newWallets[1].walletAddress]).toEqual(1500);

@@ -50,7 +50,7 @@ describe('Wallet Interactions', () => {
         await contract.writeInteraction({
             function: 'transfer',
             parameters: {
-                to: newWallets[1],
+                to: newWallets[1].walletAddress,
                 amount: 500
             }
         });

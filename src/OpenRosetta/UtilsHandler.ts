@@ -1,4 +1,5 @@
 import { SmartWeaveGlobal } from "redstone-smartweave";
+import { KnowledgeWallet, RosettaWallet } from "./types/StateTypes";
 declare const SmartWeave: SmartWeaveGlobal;
 
 export default class UtilsHandler {
@@ -7,7 +8,7 @@ export default class UtilsHandler {
      * @param {Uint8Array} byteArr The byte array to parse.
      * @returns {bigint} A bigint number parsed from the input..
      */
-    bigIntFromBytes(byteArr: Uint8Array): bigint {
+    static bigIntFromBytes(byteArr: Uint8Array): bigint {
         let hexString = "";
         for (const byte of byteArr) {
             hexString += byte.toString(16).padStart(2, '0');
@@ -25,7 +26,7 @@ export default class UtilsHandler {
      * @returns A number between 0 (inclusive) and number (exclusive).
      * @author asiaziola
      */
-    async getRandomIntNumber(max: number, caller: string, uniqueValue = ""): Promise<number> {
+    static async getRandomIntNumber(max: number, caller: string, uniqueValue = ""): Promise<number> {
         const pseudoRandomData = SmartWeave.arweave.utils.stringToBuffer(
             SmartWeave.block.height
             + SmartWeave.block.timestamp
@@ -36,5 +37,27 @@ export default class UtilsHandler {
         const hashBytes = await SmartWeave.arweave.crypto.hash(pseudoRandomData);
         const randomBigInt = this.bigIntFromBytes(hashBytes);
         return Number(randomBigInt % BigInt(max));
+    }
+
+    /**Scaffolds the default (empty) wallet object. */
+    static defaultWallet(): RosettaWallet {
+        return {
+            amount: 0,
+            paperStakes: [],
+            knowledgeTokens: []
+        }
+    }
+
+    /** Scaffolds the default (empty) knowledge wallet object. */
+    static defaultKnowledgeWallet(): KnowledgeWallet {
+        return { amount: 0, locked: [] };
+    }
+
+    /**
+     * Scaffolds a locked knowledge object within the KnowledgeWallet type.
+     * @param amount How many knowledge tokens to lock.
+     */
+    static defaultKnowledgeLock(amount): { rosetta: number, knowledgeToken: number } {
+        return { rosetta: 0, knowledgeToken: amount };
     }
 }

@@ -537,6 +537,8 @@ const rosettalib = {
             action.input.authorweight.forEach((value) => {
                 totalweight += value.weight
             })
+            // NOTE: not sure if this is the right algorithm. Should be 1600 + 384, and 
+            //          if you want that to be changeable, there should not be a constant (1984) here!
             const tokensforauthors = state.config.papertokenmint * 1984
             const tokensforreplication = (1984 - tokensforauthors) * state.config.publictokenreplication
             const tokensfortreasury = 1984 - tokensforreplication - tokensforauthors

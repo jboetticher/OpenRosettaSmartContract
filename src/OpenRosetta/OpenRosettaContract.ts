@@ -20,7 +20,6 @@ export async function handle(state: NetworkState, action: ContractInput) {
 
     // Logic classes handle all of the logic.
     // If this was REST, then consider them "controllers."
-    const utils = new UtilsHandler();
     const walHandler = new WalletHandler(state);
 
     const func = action.input.function;
@@ -38,6 +37,7 @@ export async function handle(state: NetworkState, action: ContractInput) {
             walHandler.transfer(caller, input.to, input.amount);
         }
             return { state };
+        // to: string (address), amount: number, paperId: number
         case "transferKnowledge": {
             const input = Inputs.TransferKnowledgeInput
                 .validateInput(parameters.to, parameters.amount, parameters.paperId);
@@ -45,16 +45,14 @@ export async function handle(state: NetworkState, action: ContractInput) {
                 caller, input.to, input.amount, input.paperId);
         }
             return { state };
-        // TODO: knowledge token transfer
-        case "createTrial": {
-            // TODO: trial logic
-            break;
+        // ???
+        case "publishPaper": {
+            // TODO: insert paper handler
         }
+            return { state };
         default:
             throw ContractError("Function is not defined.");
     }
-
-    return { state };
 }
 
 

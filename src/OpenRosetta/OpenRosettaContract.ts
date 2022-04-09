@@ -1,6 +1,5 @@
 import { SmartWeaveGlobal, RedStoneLogger } from "redstone-smartweave";
 import { NetworkState, ContractInput } from "./types/StateTypes";
-import UtilsHandler from "./UtilsHandler";
 import WalletHandler from "./WalletHandler";
 import * as Inputs from "./types/FunctionInputs";
 

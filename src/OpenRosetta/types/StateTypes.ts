@@ -51,6 +51,8 @@ export type NetworkConfig = {
     juryDutyStake: number;
     juryDutyFee: number;
     initialJury: number;
+
+    /**The stake in Rosetta required to publish a paper. */
     publicationStake: number;
     validationStake: number;
     transactionFee: number;
@@ -110,6 +112,7 @@ export type KnowledgeWallet = {
      * The key of the array is the timestamp where the tokens can be unlocked.
      */
     locked: {
+        // Not sure if this is used, but keeping it for backwards functionality.
         /**Amount of rosetta locked. */
         rosetta: number,
 

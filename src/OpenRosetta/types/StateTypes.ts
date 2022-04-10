@@ -48,16 +48,8 @@ export type NetworkConfig = {
     /**The wallet that collects knowledge tokens allocated to the network. */
     treasuryWallet: string;
 
-    juryDutyStake: number;
-    juryDutyFee: number;
-    initialJury: number;
-
     /**The stake in Rosetta required to publish a paper. */
     publicationStake: number;
-    validationStake: number;
-    transactionFee: number;
-
-
 
     /**The number of tokens minted for authors once a paper is published. */
     knowledgeTokenAuthorMint: number; // 1500
@@ -72,7 +64,11 @@ export type NetworkConfig = {
     publicationLockDuration: number;
 
 
-
+    juryDutyStake: number;
+    juryDutyFee: number;
+    initialJury: number;
+    validationStake: number;
+    transactionFee: number;
     trialDuration: number;
     minMint: number;
     currentMint: number;

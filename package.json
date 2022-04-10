@@ -13,7 +13,7 @@
     "writelocal": "node --experimental-json-modules ./scripts/basicArLocal/arLocalWrite.js",
     "lint": "npx eslint . --ext .ts",
     "lint:fix": "npx eslint . --ext .ts --fix",
-    "test": "npm run build && jest tests"
+    "test": "npm run build && jest tests --runInBand"
   },
   "repository": {
     "type": "git",

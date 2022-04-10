@@ -60,15 +60,16 @@ export class SmartWeaveTestSuite {
  * @returns {Promise<SmartWeaveTestSuite>} a suite of variables to test with.
  */
 export default async function testSetup(): Promise<SmartWeaveTestSuite> {
-    const arlocal: ArLocal = new ArLocal(AR_LOCAL_PORT, false);
+    const randomPort = Math.floor(Math.random()*(65000 - 10000) + 10000);
+    const arlocal: ArLocal = new ArLocal(randomPort, false);
     await arlocal.start();
     const arweave: Arweave = Arweave.init({
         host: 'localhost',
         protocol: 'http',
-        port: AR_LOCAL_PORT
+        port: randomPort
     });
 
-    LoggerFactory.INST.logLevel("warn");
+    LoggerFactory.INST.logLevel("error");
 
     const smartweave: SmartWeave = SmartWeaveNodeFactory.memCached(arweave);
     const wallet: JWKInterface = await arweave.wallets.generate();

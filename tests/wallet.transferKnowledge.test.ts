@@ -5,7 +5,7 @@ import { JWKInterface } from "arweave/node/lib/wallet";
 import { Contract, SmartWeave } from "redstone-smartweave";
 import testSetup, { createNewWallet, mineBlock, SmartWeaveTestSuite } from "./testSetup";
 
-describe('Wallet Interactions', () => {
+describe('Wallet: transferKnowledge', () => {
     let wallet: JWKInterface;
     let arweave: Arweave;
     let arlocal: ArLocal;
@@ -34,91 +34,101 @@ describe('Wallet Interactions', () => {
 
     const newWallets: ({ wallet: JWKInterface; walletAddress: string; })[] = [];
     let contract: Contract<any>;
-    it('should allow two users to transfer rosetta.', async () => {
+    it('should allow two users to transfer knowledgeTokens that they both own.', async () => {
         // Create two wallets.
         for (let i = 0; i < 2; i++) newWallets.push(await createNewWallet(arweave));
 
         // Creates a state with 1000 in each wallet.
         const walletBalances = {};
-        walletBalances[newWallets[0].walletAddress] = { amount: 1000 };
-        walletBalances[newWallets[1].walletAddress] = { amount: 1000 };
+        walletBalances[newWallets[0].walletAddress] =
+        {
+            amount: 500,
+            knowledgeTokens: {
+                0: { amount: 50 },
+                1: { amount: 100 },
+                3: { amount: 200 },
+                5: { amount: 50 },
+            }
+        };
+        walletBalances[newWallets[1].walletAddress] =
+        {
+            amount: 500,
+            knowledgeTokens: {
+                0: { amount: 50 },
+                1: { amount: 100 }
+            }
+        };
         contract = await deployContract({
             wallets: walletBalances
         });
 
-        // Attempt to transfer rosetta.
+        // Attempt to transfer knowledge tokens.
         contract.connect(newWallets[0].wallet);
         await contract.writeInteraction({
-            function: 'transfer',
+            function: 'transferKnowledge',
             parameters: {
                 to: newWallets[1].walletAddress,
-                amount: 500
+                amount: 5,
+                paperId: 0
             }
         });
         await mineBlock(arweave);
 
         // View contract state & verify.
         const { state }: any = await contract.readState();
-        expect(state.wallets[newWallets[0].walletAddress].amount).toEqual(500);
-        expect(state.wallets[newWallets[1].walletAddress].amount).toEqual(1500);
+        expect(state.wallets[newWallets[0].walletAddress].knowledgeTokens[0].amount)
+            .toEqual(45);
+        expect(state.wallets[newWallets[1].walletAddress].knowledgeTokens[0].amount)
+            .toEqual(55);
     });
 
     it('should not allow a user to transfer more than what they own.', async () => {
         // Attempt to transfer rosetta for a second time.
         contract.connect(newWallets[0].wallet);
         await contract.writeInteraction({
-            function: 'transfer',
+            function: 'transferKnowledge',
             parameters: {
                 to: newWallets[1].walletAddress,
-                amount: 501
+                amount: 100,
+                paperId: 0
             }
         });
         await mineBlock(arweave);
 
         // View contract state & verify that nothing has changed.
         const { state }: any = await contract.readState();
-        expect(state.wallets[newWallets[0].walletAddress].amount).toEqual(500);
-        expect(state.wallets[newWallets[1].walletAddress].amount).toEqual(1500);
+        expect(state.wallets[newWallets[0].walletAddress].knowledgeTokens[0].amount)
+            .toEqual(45);
+        expect(state.wallets[newWallets[1].walletAddress].knowledgeTokens[0].amount)
+            .toEqual(55);
     });
 
-    it('should not allow a user to transfer more than what they own.', async () => {
-        // Attempt to transfer rosetta for a second time (501 > 500).
-        contract.connect(newWallets[0].wallet);
-        await contract.writeInteraction({
-            function: 'transfer',
-            parameters: {
-                to: newWallets[1].walletAddress,
-                amount: 501
-            }
+    /*
+        it('should not allow a user to transfer to a user that has no wallet.', async () => {
+            // Create a new random wallet.
+            const { walletAddress } = await createNewWallet(arweave);
+    
+            // Attempt to transfer rosetta to a new wallet.
+            contract.connect(newWallets[0].wallet);
+            await contract.writeInteraction({
+                function: 'transfer',
+                parameters: {
+                    to: walletAddress,
+                    amount: 1
+                }
+            });
+            await mineBlock(arweave);
+    
+            // View contract state & verify that nothing has changed.
+            const { state }: any = await contract.readState();
+            expect(state.wallets[newWallets[0].walletAddress].amount).toEqual(500);
+            expect(state.wallets[walletAddress]).toBeUndefined();
         });
-        await mineBlock(arweave);
-
-        // View contract state & verify that nothing has changed.
-        const { state }: any = await contract.readState();
-        expect(state.wallets[newWallets[0].walletAddress].amount).toEqual(500);
-        expect(state.wallets[newWallets[1].walletAddress].amount).toEqual(1500);
-    });
-
-    it('should not allow a user to transfer to a user that has no wallet.', async () => {
-        // Create a new random wallet.
-        const { walletAddress } = await createNewWallet(arweave);
-        
-        // Attempt to transfer rosetta to a new wallet.
-        contract.connect(newWallets[0].wallet);
-        await contract.writeInteraction({
-            function: 'transfer',
-            parameters: {
-                to: walletAddress,
-                amount: 1
-            }
+    
+        afterAll(async () => {
+            await arlocal.stop();
         });
-        await mineBlock(arweave);
-
-        // View contract state & verify that nothing has changed.
-        const { state }: any = await contract.readState();
-        expect(state.wallets[newWallets[0].walletAddress].amount).toEqual(500);
-        expect(state.wallets[walletAddress]).toBeUndefined();
-    });
+    */
 
     afterAll(async () => {
         await arlocal.stop();

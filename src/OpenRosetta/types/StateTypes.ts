@@ -85,6 +85,9 @@ export type RosettaWallet = {
     /**The amount of rosetta that this wallet holds. */
     amount: number,
 
+    /**The role value associated with this user. */
+    role: number,
+
     /**
      * An array of paper stakes (for publishing) within the wallet.
      * The key of the array is the id of the paper.

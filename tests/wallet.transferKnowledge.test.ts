@@ -103,33 +103,6 @@ describe('Wallet: transferKnowledge', () => {
             .toEqual(55);
     });
 
-    /*
-        it('should not allow a user to transfer to a user that has no wallet.', async () => {
-            // Create a new random wallet.
-            const { walletAddress } = await createNewWallet(arweave);
-    
-            // Attempt to transfer rosetta to a new wallet.
-            contract.connect(newWallets[0].wallet);
-            await contract.writeInteraction({
-                function: 'transfer',
-                parameters: {
-                    to: walletAddress,
-                    amount: 1
-                }
-            });
-            await mineBlock(arweave);
-    
-            // View contract state & verify that nothing has changed.
-            const { state }: any = await contract.readState();
-            expect(state.wallets[newWallets[0].walletAddress].amount).toEqual(500);
-            expect(state.wallets[walletAddress]).toBeUndefined();
-        });
-    
-        afterAll(async () => {
-            await arlocal.stop();
-        });
-    */
-
     afterAll(async () => {
         await arlocal.stop();
     });

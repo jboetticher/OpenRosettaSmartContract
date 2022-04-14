@@ -43,6 +43,7 @@ export default class UtilsHandler {
     static defaultWallet(): RosettaWallet {
         return {
             amount: 0,
+            role: 0,
             paperStakes: [],
             knowledgeTokens: []
         }

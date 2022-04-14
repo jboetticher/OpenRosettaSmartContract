@@ -1,5 +1,6 @@
 import { RedStoneLogger } from "redstone-smartweave";
 import { NetworkState, RosettaWallet } from "./types/StateTypes";
+import UtilsHandler from "./UtilsHandler";
 declare const ContractError;
 
 declare const logger: RedStoneLogger;
@@ -23,8 +24,10 @@ export default class WalletHandler {
     transfer(from: string, to: string, amount: number): void {
         if (!(from in this.state.wallets))
             throw new ContractError(`Wallet for ${from} does not exist`);
-        if (!(to in this.state.wallets))
-            throw new ContractError(`Wallet for ${to} does not exist`);
+
+        if (!(to in this.state.wallets)) {
+            this.state.wallets[to] = UtilsHandler.defaultWallet();
+        }
 
         const frwallet: RosettaWallet = this.state.wallets[from];
         const towallet: RosettaWallet = this.state.wallets[to];
@@ -37,7 +40,7 @@ export default class WalletHandler {
     }
 
     /**
-     * 
+     * Transfers a knowledge token between users.
      * @param from The wallet to transfer from.
      * @param to The wallet to transfer to.
      * @param amount How many knowledge tokens to transfer.
@@ -46,8 +49,10 @@ export default class WalletHandler {
     transferKnowledge(from: string, to: string, amount: number, paperId: number): void {
         if (!(from in this.state.wallets))
             throw new ContractError(`Wallet for ${from} does not exist`);
-        if (!(to in this.state.wallets))
-            throw new ContractError(`Wallet for ${to} does not exist`);
+            
+        if (!(to in this.state.wallets)) {
+            this.state.wallets[to] = UtilsHandler.defaultWallet();
+        }
 
         const frwallet: RosettaWallet = this.state.wallets[from];
         const towallet: RosettaWallet = this.state.wallets[to];

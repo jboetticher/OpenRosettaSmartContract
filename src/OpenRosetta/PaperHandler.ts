@@ -1,9 +1,10 @@
 import { NetworkState, RosettaWallet } from "./types/StateTypes";
-import { SmartWeaveGlobal } from "redstone-smartweave";
+import { SmartWeaveGlobal, RedStoneLogger } from "redstone-smartweave";
 import UtilsHandler from "./UtilsHandler";
 
 declare const ContractError;
 declare const SmartWeave: SmartWeaveGlobal;
+declare const logger: RedStoneLogger;
 
 
 /**
@@ -73,17 +74,18 @@ export default class PaperHandler {
         const authorMint = this.state.config.knowledgeTokenAuthorMint;
         const authorUnlockTimestamp =
             SmartWeave.block.timestamp + this.state.config.publicationLockDuration;
+        logger.warn("Timestamp: " + authorUnlockTimestamp);
         const treasuryMint = this.state.config.knowledgeTokenTreasuryMint;
         authors.forEach((addr, i) => {
             const authorWallet: RosettaWallet = this.state.wallets[addr];
             const authorTokens = authorMint * authorWeights[i];
             authorWallet.knowledgeTokens[paperId] = UtilsHandler.defaultKnowledgeWallet();
-            authorWallet.knowledgeTokens[paperId].locked[authorUnlockTimestamp] =
-                UtilsHandler.defaultKnowledgeLock(authorTokens);
+            authorWallet.knowledgeTokens[paperId].locked.amount = authorTokens;
+            authorWallet.knowledgeTokens[paperId].locked.unlock = authorUnlockTimestamp;
         });
         this.state.wallets[this.state.config.treasuryWallet].knowledgeTokens[paperId] = {
             amount: treasuryMint,
-            locked: []
+            locked: { amount: 0, unlock: 0 }
         };
 
         // Creator must stake rosetta.

@@ -51,14 +51,6 @@ export default class UtilsHandler {
 
     /** Scaffolds the default (empty) knowledge wallet object. */
     static defaultKnowledgeWallet(): KnowledgeWallet {
-        return { amount: 0, locked: [] };
-    }
-
-    /**
-     * Scaffolds a locked knowledge object within the KnowledgeWallet type.
-     * @param amount How many knowledge tokens to lock.
-     */
-    static defaultKnowledgeLock(amount): { rosetta: number, knowledgeToken: number } {
-        return { rosetta: 0, knowledgeToken: amount };
+        return { amount: 0, locked: { unlock: 0, amount: 0 } };
     }
 }

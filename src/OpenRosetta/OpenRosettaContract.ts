@@ -65,7 +65,7 @@ export async function handle(state: NetworkState, action: ContractInput) {
         case "publishPaper": {
             roleHandler.requireTieredRole(caller, ROLES.author);
             const input = Inputs.PublishPaperInput
-                .validateInput(parameters.creator, parameters.paperURL, 
+                .validateInput(parameters.paperURL, 
                     parameters.paperSymbol, parameters.publishTimestamp, 
                     parameters.authors, parameters.authorWeights);
             pprHandler.publishPaper(caller, input.paperURL, input.paperSymbol, 

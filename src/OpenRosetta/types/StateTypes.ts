@@ -106,18 +106,13 @@ export type KnowledgeWallet = {
     /**The amount of knowledge tokens owned. */
     amount: number,
 
-    /**
-     * An array of value locked within the knowledge wallet.
-     * The key of the array is the timestamp where the tokens can be unlocked.
-     */
+    /** The locked wallet values. */
     locked: {
-        // Not sure if this is used, but keeping it for backwards functionality.
-        /**Amount of rosetta locked. */
-        rosetta: number,
-
-        /**Amount of knowlege token locked. */
-        knowledgeToken: number
-    }[]
+        /** Timestamp of when the lock has finishes. */
+        unlock: number;
+        /** How much is locked up. */
+        amount: number;
+    };
 }
 
 /**A type that shows how much has been staked on a paper. */
@@ -152,8 +147,10 @@ export type PaperState = {
     /**The paper's current impact score. */
     impactScore: number;
 
+    /** ??? */
     falsificationPool: number;
 
+    /** ??? */
     replicationPool: Array<number>;
 
     /**The knowledge tokens reserved for the replication pool. */

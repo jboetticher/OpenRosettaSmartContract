@@ -73,9 +73,8 @@ export class PublishPaperInput {
     authors: string[];
     authorWeights: number[];
 
-    constructor(creator: string, paperURL: string, paperSymbol: string,
+    constructor(paperURL: string, paperSymbol: string,
         publishTimestamp: number, authors: string[], authorWeights: number[]) {
-        this.creator = creator;
         this.paperURL = paperURL;
         this.paperSymbol = paperSymbol;
         this.publishTimestamp = publishTimestamp;
@@ -83,9 +82,8 @@ export class PublishPaperInput {
         this.authorWeights = authorWeights;
     }
 
-    static validateInput(creator: string, paperURL: string, paperSymbol: string,
+    static validateInput(paperURL: string, paperSymbol: string,
         publishTimestamp: number, authors: string[], authorWeights: number[]): PublishPaperInput {
-        assertString(creator, "creator");
         assertString(paperURL, "paperURL");
         assertString(paperSymbol, "paperSymbol");
         assertNumber(publishTimestamp, "publishTimestamp");
@@ -99,6 +97,6 @@ export class PublishPaperInput {
         for (let i = 0; i < authorWeights.length; i++)
             assertNumber(authorWeights[i], `authorWeights[${i}]`);
         return new PublishPaperInput(
-            creator, paperURL, paperSymbol, publishTimestamp, authors, authorWeights);
+            paperURL, paperSymbol, publishTimestamp, authors, authorWeights);
     }
 }

@@ -1,3 +1,5 @@
+import { NetworkChange, NetworkChangeIds } from "./StateTypes";
+
 declare const ContractError;
 
 /**
@@ -66,7 +68,6 @@ export class TransferKnowledgeInput {
 }
 
 export class PublishPaperInput {
-    creator: string;
     paperURL: string;
     paperSymbol: string;
     publishTimestamp: number;
@@ -98,5 +99,47 @@ export class PublishPaperInput {
             assertNumber(authorWeights[i], `authorWeights[${i}]`);
         return new PublishPaperInput(
             paperURL, paperSymbol, publishTimestamp, authors, authorWeights);
+    }
+}
+
+export class OnboardAuthorInput {
+    newAuthor: string;
+
+    constructor(newAuthor: string) {
+        this.newAuthor = newAuthor;
+    }
+
+    static validateInput(newAuthor: string): OnboardAuthorInput {
+        assertString(newAuthor, "newAuthor");
+        return new OnboardAuthorInput(newAuthor);
+    }
+}
+
+export class ProposeNetworkChangeInput {
+    changes: NetworkChange[];
+    
+    constructor(changes: NetworkChange[]) {
+        this.changes = changes;
+    }
+
+    static validateInput(changes: NetworkChange[]): ProposeNetworkChangeInput {
+        assertArray(changes, "changes");
+        let change: NetworkChange;
+        for(change of changes) {
+            assertString(change.changeId, "changeId");
+            switch(change.changeId) {
+                case NetworkChangeIds.NewAdmin:
+                case NetworkChangeIds.RemoveAdmin:
+                    assertString(change.data, "data");
+                    break;
+                case NetworkChangeIds.NewConfig:
+                    // TODO: not sure how to validate this. 
+                    //      We probably need to define a new type or something
+                    break;
+                default:
+                    throw new ContractError("changeId was invalid!");
+            }
+        }
+        return new ProposeNetworkChangeInput(changes);
     }
 }

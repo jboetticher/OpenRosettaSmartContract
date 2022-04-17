@@ -403,6 +403,8 @@ const rosettalib = {
             throw new ContractError(`${wallet} does not exist.`)
         },
 
+
+//#region Trial Related Functions
         /**
          * Creates a trial for a specific paperId.
          * See exampletrialstate.json
@@ -501,6 +503,8 @@ const rosettalib = {
             }
             throw new ContractError(`${wallet} does not exist.`)
         },
+//#endregion
+
 
         /**
          * Publishes a new paper.

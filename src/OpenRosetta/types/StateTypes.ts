@@ -21,6 +21,9 @@ export type NetworkState = {
     /**The next paperId to be published. */
     nextPaperId: number;
 
+    /**The id of the next network change. */
+    nextNetworkChangeId: number;
+
     /**
      * An array of all administrator configurations on the network.
      * The key of the array is each administrator's wallet.
@@ -41,6 +44,12 @@ export type NetworkState = {
      * The key of the array is the paper id.
      */
     papers: PaperState[];
+
+    /**
+     * An array of all of the current network change proposals.
+     * The key of the array is the changeProposalId.
+     */
+    networkChangeProposals: NetworkChangeProposal[];
 }
 
 /**Configuration of the network (miscellaneous globals). */
@@ -155,4 +164,39 @@ export type PaperState = {
 
     /**The knowledge tokens reserved for the replication pool. */
     replicationReservedTokens: number;
+}
+
+/**A type that represents a change to the network config. */
+export type NetworkChangeProposal = {
+    /**All of the votes curently casted. */
+    votes: { voter: string, vote: boolean }[];
+
+    /**If voting of this change is still active. */
+    votingActive: boolean;
+
+    /**When the voting for the proposal ended. Default 0. */
+    votingEnded: number;
+
+    /**Whether or not the network change proposal passed. */
+    outcome: boolean;
+
+    /**When the network change proposal was created. */
+    created: number;
+
+    /**The changes being proposed in this proposal. */
+    changes: NetworkChange[];
+}
+
+/**An enum that represents the possible network changes that can be proposed. */
+// eslint-disable-next-line no-shadow
+export enum NetworkChangeIds {
+    NewConfig = 'NEW_CONFIG',
+    NewAdmin = 'NEW_ADMIN',
+    RemoveAdmin = 'REMOVE_ADMIN'
+}
+
+/**Data that represents a network change. */
+export type NetworkChange = {
+    changeId: NetworkChangeIds;
+    data: string | NetworkChange;
 }

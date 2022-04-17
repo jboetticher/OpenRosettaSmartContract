@@ -4,6 +4,7 @@ import WalletHandler from "./WalletHandler";
 import * as Inputs from "./types/FunctionInputs";
 import RolesHandler from "./RolesHandler";
 import PaperHandler from "./PaperHandler";
+import AdminHandler from "./AdminHandler";
 
 //declare const SmartWeave: SmartWeaveGlobal;
 declare const logger: RedStoneLogger;
@@ -37,10 +38,27 @@ export async function handle(state: NetworkState, action: ContractInput) {
     const roleHandler = new RolesHandler(state, ROLES.admin);
     const walHandler = new WalletHandler(state);
     const pprHandler = new PaperHandler(state);
+    const admnHandler = new AdminHandler(state, ROLES);
 
     // Different switches handle all of the public facing actions.
     // Should be made up of logic classes.
     switch (func) {
+        // newAuthor: string
+        case "onboardAuthor": {
+            const input = Inputs.OnboardAuthorInput
+                .validateInput(parameters.newAuthor);
+            roleHandler.requireTieredRole(caller, ROLES.admin);
+            admnHandler.onboardAuthor(input.newAuthor);
+        }
+            return { state };
+        // changes: NetworkChange[]
+        case "proposeNetworkChange": {
+            const input = Inputs.ProposeNetworkChangeInput
+                .validateInput(parameters.changes);
+            roleHandler.requireTieredRole(caller, ROLES.admin);
+            admnHandler.proposeNetworkChange(input.changes);
+        }
+            return { state };
         // to: string (address), amount: number
         case "transfer": {
             const input = Inputs.TransferInput
@@ -65,10 +83,10 @@ export async function handle(state: NetworkState, action: ContractInput) {
         case "publishPaper": {
             roleHandler.requireTieredRole(caller, ROLES.author);
             const input = Inputs.PublishPaperInput
-                .validateInput(parameters.paperURL, 
-                    parameters.paperSymbol, parameters.publishTimestamp, 
+                .validateInput(parameters.paperURL,
+                    parameters.paperSymbol, parameters.publishTimestamp,
                     parameters.authors, parameters.authorWeights);
-            pprHandler.publishPaper(caller, input.paperURL, input.paperSymbol, 
+            pprHandler.publishPaper(caller, input.paperURL, input.paperSymbol,
                 input.publishTimestamp, input.authors, input.authorWeights);
         }
             return { state };

@@ -1,4 +1,4 @@
-import { NetworkChange, NetworkChangeIds } from "./StateTypes";
+import { NetworkChange, NetworkChangeIds, NetworkConfig } from "./StateTypes";
 
 declare const ContractError;
 
@@ -23,6 +23,16 @@ function assertString(val: unknown, name: string): void {
 }
 
 /**
+ * Asserts that a parameter is a boolean.
+ * @param val The value that we are asserting is a boolean.
+ * @param name The name of the variable.
+ */
+function assertBoolean(val: unknown, name: string): void {
+    if (typeof (val) != 'boolean')
+        throw new ContractError(`Paramater ${name} isn't a boolean.`);
+}
+
+/**
  * Asserts that a parameter is an array.
  * @param val The value that we are asserting is an array.
  * @param name The name of the variable.
@@ -30,6 +40,32 @@ function assertString(val: unknown, name: string): void {
 function assertArray(val: unknown, name: string): void {
     if (!Array.isArray(val))
         throw new ContractError(`Parameter ${name} isn't an array.`);
+}
+
+/**
+ * Manually checks if something is a network config.
+ * @param config A possible network config.
+ * @returns The validated network config.
+ */
+export function assertNetworkConfig(config: string | NetworkConfig): NetworkConfig {
+    if (typeof (config) === 'string') throw new
+        ContractError("Config must not be a string!");
+    assertString(config.treasuryWallet, 'config.treasuryWallet');
+    assertNumber(config.knowledgeTokenAuthorMint, 'config.knowledgeTokenAuthorMint');
+    assertNumber(config.knowledgeTokenReplicatorMint, 'config.knowledgeTokenReplicatorMint');
+    assertNumber(config.knowledgeTokenTreasuryMint, 'config.knowledgeTokenTreasuryMint');
+    assertNumber(config.publicationLockDuration, 'config.publicationLockDuration');
+    assertNumber(config.juryDutyStake, 'config.juryDutyStake');
+    assertNumber(config.juryDutyFee, 'config.juryDutyFee');
+    assertNumber(config.initialJury, 'config.initialJury');
+    assertNumber(config.validationStake, 'config.validationStake');
+    assertNumber(config.transactionFee, 'config.transactionFee');
+    assertNumber(config.trialDuration, 'config.trialDuration');
+    assertNumber(config.minMint, 'config.minMint');
+    assertNumber(config.currentMint, 'config.currentMint');
+    assertNumber(config.decayRate, 'config.decayRate');
+
+    return config as NetworkConfig;
 }
 
 export class TransferInput {
@@ -117,29 +153,49 @@ export class OnboardAuthorInput {
 
 export class ProposeNetworkChangeInput {
     changes: NetworkChange[];
-    
+
     constructor(changes: NetworkChange[]) {
         this.changes = changes;
     }
 
+
+
     static validateInput(changes: NetworkChange[]): ProposeNetworkChangeInput {
         assertArray(changes, "changes");
         let change: NetworkChange;
-        for(change of changes) {
+        for (change of changes) {
             assertString(change.changeId, "changeId");
-            switch(change.changeId) {
+            switch (change.changeId) {
                 case NetworkChangeIds.NewAdmin:
                 case NetworkChangeIds.RemoveAdmin:
+                case NetworkChangeIds.GrantAdminVotingRights:
+                case NetworkChangeIds.RevokeAdminVotingRights:
                     assertString(change.data, "data");
                     break;
                 case NetworkChangeIds.NewConfig:
-                    // TODO: not sure how to validate this. 
-                    //      We probably need to define a new type or something
+                    assertNetworkConfig(change.data);
                     break;
                 default:
                     throw new ContractError("changeId was invalid!");
             }
         }
         return new ProposeNetworkChangeInput(changes);
+    }
+}
+
+export class VoteOnNetworkChangeProposalInput {
+    networkChangeId: number;
+    vote: boolean;
+
+    constructor(networkChangeId: number, vote: boolean) {
+        this.networkChangeId = networkChangeId;
+        this.vote = vote;
+    }
+
+    static validateInput(networkChangeId: number, vote: boolean):
+        VoteOnNetworkChangeProposalInput {
+        assertNumber(networkChangeId, "networkChangeId");
+        assertBoolean(vote, "vote");
+        return new VoteOnNetworkChangeProposalInput(networkChangeId, vote);
     }
 }

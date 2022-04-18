@@ -59,6 +59,14 @@ export async function handle(state: NetworkState, action: ContractInput) {
             admnHandler.proposeNetworkChange(input.changes);
         }
             return { state };
+        case "voteOnNetworkChangeProposal": {
+            const input = Inputs.VoteOnNetworkChangeProposalInput
+                .validateInput(parameters.networkChangeId, parameters.vote);
+            roleHandler.requireTieredRole(caller, ROLES.admin);
+            admnHandler.voteOnNetworkChangeProposal(
+                caller, input.networkChangeId, input.vote);
+        }
+            return { state };
         // to: string (address), amount: number
         case "transfer": {
             const input = Inputs.TransferInput

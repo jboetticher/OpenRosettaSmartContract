@@ -168,8 +168,11 @@ export type PaperState = {
 
 /**A type that represents a change to the network config. */
 export type NetworkChangeProposal = {
-    /**All of the votes curently casted. */
-    votes: { voter: string, vote: boolean }[];
+    /**
+     * All of the votes curently casted. 
+     * The key is the address of the person of voting.
+    */
+    votes: boolean[];
 
     /**If voting of this change is still active. */
     votingActive: boolean;
@@ -192,11 +195,13 @@ export type NetworkChangeProposal = {
 export enum NetworkChangeIds {
     NewConfig = 'NEW_CONFIG',
     NewAdmin = 'NEW_ADMIN',
-    RemoveAdmin = 'REMOVE_ADMIN'
+    RemoveAdmin = 'REMOVE_ADMIN',
+    RevokeAdminVotingRights = 'REMOVE_ADMIN_VOTING_RIGHTS',
+    GrantAdminVotingRights = 'GRANT_ADMIN_VOTING_RIGHTS',
 }
 
 /**Data that represents a network change. */
 export type NetworkChange = {
     changeId: NetworkChangeIds;
-    data: string | NetworkChange;
+    data: string | NetworkConfig;
 }

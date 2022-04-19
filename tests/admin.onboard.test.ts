@@ -6,7 +6,7 @@ import { JWKInterface } from "arweave/node/lib/wallet";
 import { Contract, SmartWeave } from "redstone-smartweave";
 import testSetup, { createNewWallet, mineBlock, SmartWeaveTestSuite } from "./testSetup";
 
-describe('Paper: publishPaper', () => {
+describe('Admin: onboardAuthor', () => {
     let wallet: JWKInterface;
     let arweave: Arweave;
     let arlocal: ArLocal;
@@ -37,7 +37,7 @@ describe('Paper: publishPaper', () => {
     let contract: Contract<any>;
     let globalState;
     it('should allow an administrator to onboard an author.', async () => {
-        // Create two wallets.
+        // Create three wallets.
         for (let i = 0; i < 3; i++) newWallets.push(await createNewWallet(arweave));
 
         // Creates a state with 1000 in each wallet.
@@ -60,7 +60,7 @@ describe('Paper: publishPaper', () => {
             globalState = state;
         }
 
-        // Attempt to publish a new paper.
+        // Attempt to onboard an author.
         contract.connect(newWallets[1].wallet);
         await contract.writeInteraction({
             function: 'onboardAuthor',

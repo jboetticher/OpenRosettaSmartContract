@@ -10,8 +10,6 @@ import { SmartWeave } from "redstone-smartweave/lib/types/core/SmartWeave";
 import fs from "fs";
 import path from 'path';
 
-const AR_LOCAL_PORT = 1985;
-
 /**
  * Mints a value of 1000000000000000 to a specified wallet (arlocal).
  * @param {Arweave} arweave The arweave instance to interact with.
@@ -69,7 +67,7 @@ export default async function testSetup(): Promise<SmartWeaveTestSuite> {
         port: randomPort
     });
 
-    LoggerFactory.INST.logLevel("warn");
+    LoggerFactory.INST.logLevel("error");
 
     const smartweave: SmartWeave = SmartWeaveNodeFactory.memCached(arweave);
     const wallet: JWKInterface = await arweave.wallets.generate();

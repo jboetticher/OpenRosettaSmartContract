@@ -117,6 +117,8 @@ describe('Paper: publishPaper', () => {
                 paperData.authorWeights[1] / totalWeight);
     });
 
+    // TODO: permissions & negative cases
+
 
     afterAll(async () => {
         await arlocal.stop();

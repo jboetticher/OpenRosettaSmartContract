@@ -59,10 +59,13 @@ export async function handle(state: NetworkState, action: ContractInput) {
             admnHandler.proposeNetworkChange(input.changes);
         }
             return { state };
+        // networkChangeId: 0, vote: boolean
         case "voteOnNetworkChangeProposal": {
             const input = Inputs.VoteOnNetworkChangeProposalInput
                 .validateInput(parameters.networkChangeId, parameters.vote);
             roleHandler.requireTieredRole(caller, ROLES.admin);
+            if(!state.administrators[caller]?.canVote)
+                throw new ContractError("Administrator does not have voting rights!");
             admnHandler.voteOnNetworkChangeProposal(
                 caller, input.networkChangeId, input.vote);
         }

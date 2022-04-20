@@ -172,7 +172,7 @@ export type NetworkChangeProposal = {
      * All of the votes curently casted. 
      * The key is the address of the person of voting.
     */
-    votes: boolean[];
+    votes: { voter: string, vote: boolean }[];
 
     /**If voting of this change is still active. */
     votingActive: boolean;

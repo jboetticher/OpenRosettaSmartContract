@@ -13,9 +13,9 @@ declare const logger: RedStoneLogger;
  */
 export default class AdminHandler {
     state: NetworkState;
-    roleDefs: { author: number, admin: number };
+    roleDefs: { author: number, admin: number, participant: number };
 
-    constructor(state: NetworkState, roleDefs: { author: number, admin: number }) {
+    constructor(state: NetworkState, roleDefs: { author: number, admin: number, participant: number }) {
         this.state = state;
         this.roleDefs = roleDefs;
     }
@@ -68,6 +68,7 @@ export default class AdminHandler {
         caller: string,
         networkChangeId: number,
         vote: boolean) {
+
         // Ensure that you can vote on the proposal.
         const proposal: NetworkChangeProposal = this.state.networkChangeProposals[networkChangeId];
         if (proposal === undefined)
@@ -76,52 +77,62 @@ export default class AdminHandler {
             throw new ContractError("Cannot vote on a proposal that has ended!");
 
         // Add vote to the change.
-        proposal.votes[caller] = vote;
+        const currentVote = proposal.votes.find(x => x.voter === caller);
+        if (currentVote === undefined) proposal.votes.push({ voter: caller, vote: vote });
+        else currentVote.vote = vote;
 
         // Calculate votes
         const totalVotes = proposal.votes.length;
-        const yesVotes = proposal.votes.filter(v => v).length;
+        const yesVotes = proposal.votes.filter(v => v.vote).length;
         const nayVotes = totalVotes - yesVotes;
-        const requiredVotes =
-            this.state.administrators.filter(a => a.canVote).length / 2;
+        const requiredVotes = Object.entries(this.state.administrators)
+            .filter(([, v]) => v.canVote).length / 2;
 
-        const assertString = function(change): string {
+        const assertString = function (change): string {
             if (typeof (change.data) !== 'string') throw new ContractError(
                 "Data is indecipherable!");
-            return(change.data);
+            return (change.data);
         };
 
         // Apply resolution if required votes are met.
         if (yesVotes > requiredVotes) {
+            console.warn("BEGIN YES APPLICATION");
             // Loop through all of the changes
             let change: NetworkChange;
             for (change of proposal.changes) {
                 switch (change.changeId) {
-                    case NetworkChangeIds.NewConfig:
+                    case NetworkChangeIds.NewConfig: {
                         const config = assertNetworkConfig(change.data);
                         this.state.config = config;
+                    }
                         break;
-                    case NetworkChangeIds.NewAdmin:
+                    case NetworkChangeIds.NewAdmin: {
                         const newAdmin = assertString(change);
                         this.state.administrators[newAdmin] = {
                             canVote: true
                         };
+                        this.state.wallets[newAdmin].role = this.roleDefs.admin;
+                    }
                         break;
-                    case NetworkChangeIds.RemoveAdmin:
+                    case NetworkChangeIds.RemoveAdmin: {
                         const oldAdmin = assertString(change);
                         delete this.state.administrators[oldAdmin];
+                        this.state.wallets[oldAdmin].role = this.roleDefs.participant;
+                    }
                         break;
-                    case NetworkChangeIds.GrantAdminVotingRights:
+                    case NetworkChangeIds.GrantAdminVotingRights: {
                         const gvAdmin = assertString(change);
-                        if(!(gvAdmin in this.state.administrators)) throw new ContractError(
+                        if (!(gvAdmin in this.state.administrators)) throw new ContractError(
                             "Provided address not an administrator, cannot grant rights!");
                         this.state.administrators[gvAdmin].canVote = true;
+                    }
                         break;
-                    case NetworkChangeIds.RevokeAdminVotingRights:
+                    case NetworkChangeIds.RevokeAdminVotingRights: {
                         const rvAdmin = assertString(change);
-                        if(!(rvAdmin in this.state.administrators)) throw new ContractError(
+                        if (!(rvAdmin in this.state.administrators)) throw new ContractError(
                             "Provided address not an administrator, cannot revoke rights!");
-                        this.state.administrators[gvAdmin].canVote = false;
+                        this.state.administrators[rvAdmin].canVote = false;
+                    }
                         break;
                     default:
                         throw new ContractError(
@@ -133,7 +144,8 @@ export default class AdminHandler {
             proposal.votingActive = false;
             proposal.outcome = true;
         }
-        else if (nayVotes > requiredVotes) {
+        else if (nayVotes >= requiredVotes) {
+            console.warn("BEGIN NAY APPLICATION");
             proposal.votingEnded = SmartWeave.block.timestamp;
             proposal.votingActive = false;
             proposal.outcome = false;

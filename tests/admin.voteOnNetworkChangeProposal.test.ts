@@ -187,7 +187,6 @@ describe('Admin: proposeNetworkChange', () => {
     });
 
     it('should properly end a proposal when it fails.', async () => {
-        console.log("BEGIN FINISH VOTE");
         // Vote 4 more times to get to the 50% mark.
         // 50% should be enough to fail.
         for (let i = 1; i <= 5; i++) {
@@ -453,8 +452,6 @@ describe('Admin: proposeNetworkChange', () => {
         // Check votes
         const { state }: any = await contract.readState();
         const proposal: NetworkChangeProposal = state.networkChangeProposals[proposalId];
-        console.log(proposal);
-        console.log(proposal.votes);
         expect(proposal.votes.length).toBe(10);
         for (let i = 0; i < 4; i++)
             expect(proposal.votes[i].vote).toBeFalsy();

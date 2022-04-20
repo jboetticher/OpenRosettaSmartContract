@@ -104,11 +104,6 @@ describe('Paper: publishPaper', () => {
             .toBe(networkConfig.knowledgeTokenReplicatorMint);
         const totalWeight = paperData.authorWeights[0] + paperData.authorWeights[1];
 
-        /* Something funky is going on...
-          console.log
-            [ <1650047040 empty items>, { rosetta: 0, knowledgeToken: 300 } ]
-        */
-
         expect(state.wallets[paperData.authors[0]].knowledgeTokens[0].locked.amount)
             .toBe(networkConfig.knowledgeTokenAuthorMint *
                 paperData.authorWeights[0] / totalWeight);

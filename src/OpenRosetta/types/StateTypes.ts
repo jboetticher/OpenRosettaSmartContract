@@ -46,6 +46,11 @@ export type NetworkState = {
     papers: PaperState[];
 
     /**
+     * An array of all of the trials.
+     */
+    trials: Trial[];
+
+    /**
      * An array of all of the current network change proposals.
      * The key of the array is the changeProposalId.
      */
@@ -141,6 +146,11 @@ export type PaperState = {
     /**The ticker of the knowledgeToken. */
     symbol: string;
 
+    /**The original authors of the paper. */
+    authors: string[];
+
+    // @TODO: citations
+
     /**When the paper was reportedly published. */
     publishTimestamp: number;
 
@@ -150,20 +160,23 @@ export type PaperState = {
     /**True if the paper has been invalidated by a tribunal. */
     invalidated: boolean;
 
-    /** ??? */
+    /**The wallet who staked rosetta to publish the paper. Source of falsification. */
     stakingWallet: string;
 
     /**The paper's current impact score. */
     impactScore: number;
 
-    /** ??? */
-    falsificationPool: number;
-
-    /** ??? */
-    replicationPool: Array<number>;
+    /**Amount of rosetta tokens reserved for the replication pool. */
+    replicationRosettaPool: number[];
 
     /**The knowledge tokens reserved for the replication pool. */
     replicationReservedTokens: number;
+
+    /**
+     * NOTE: 
+     * I have removed the falsificationPool since it was redundant.
+     * Instead, it will look at the stake of the "stakingWallet".
+     */
 }
 
 /**A type that represents a change to the network config. */
@@ -204,4 +217,31 @@ export enum NetworkChangeIds {
 export type NetworkChange = {
     changeId: NetworkChangeIds;
     data: string | NetworkConfig;
+}
+
+/**Available states of a tribunal. */
+// eslint-disable-next-line no-shadow
+export enum TribunalState {
+    PreJury,                            // Validator brings evidence & charges against paper
+    Settlement,                         // Amicable settlement occurs without jury
+    JuryDeliberation,                   // Jury is formed and is deciding their votes
+    Concluded,                          // Tribunal concludes
+    Appealed                            // An appeal was created, a new tribunal is formed.
+}
+
+/**A type that represents a trial for a paper. */
+export type Trial = {
+    paperId: number;
+    validatorWallet: string;
+    stakedValidator: number; // rename this, it sounds like a wallet
+    jurorStake: number;
+    jurorFees: number;
+    trialSize: number;
+    prosecutionEvidence: string[]; // rename this to represent transactions?
+    defenseEvidence: string[], // rename this to represent transactions?
+    pastVote: [],
+    currentVote: [],
+    currentJurors: [],
+    currentState: TribunalState,
+    until: number; // timestamp
 }

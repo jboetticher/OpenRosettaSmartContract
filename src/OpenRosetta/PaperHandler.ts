@@ -100,13 +100,18 @@ export default class PaperHandler {
         this.state.papers[paperId] = {
             url: paperURL,
             symbol: paperSymbol,
+            authors: authors,
             publishTimestamp: publishTimestamp,
             networkPublishTimestamp: SmartWeave.block.timestamp,
             invalidated: false,
             stakingWallet: creator,
             impactScore: 0,
-            falsificationPool: 0,
-            replicationPool: [0, 0, 0],
+            /**
+             * NOTE:
+             * There is no documentation yet on how many replication pools there are. We assume 3.
+             * There is no documentation on how many paper tokens RP1 gets vs RP2. Assuming equal division.
+             */
+            replicationRosettaPool: [0, 0, 0],
             replicationReservedTokens: replicationMint
         };
     }

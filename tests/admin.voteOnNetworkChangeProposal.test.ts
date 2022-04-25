@@ -38,7 +38,7 @@ describe('Admin: proposeNetworkChange', () => {
 
     const newWallets: ({ wallet: JWKInterface; walletAddress: string; })[] = [];
     let contract: Contract<any>;
-    const proposalConfigChange = {
+    const proposalConfigChange: NetworkConfig = {
         treasuryWallet: "TEST TREASURY WALLET",
         publicationStake: 1000,
         knowledgeTokenAuthorMint: 1500,
@@ -49,6 +49,7 @@ describe('Admin: proposeNetworkChange', () => {
         juryDutyFee: 1000,
         initialJury: 1000,
         validationStake: 1000,
+        falsificationStake: 1000,
         transactionFee: 10,
         trialDuration: 1000,
         minMint: 150,

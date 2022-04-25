@@ -82,6 +82,7 @@ export type NetworkConfig = {
     juryDutyFee: number;
     initialJury: number;
     validationStake: number;
+    falsificationStake: number;
     transactionFee: number;
     trialDuration: number;
     minMint: number;
@@ -231,17 +232,39 @@ export enum TribunalState {
 
 /**A type that represents a trial for a paper. */
 export type Trial = {
+    /**The id of the paper that a tribunal is made for. */
     paperId: number;
+
+    /**The wallet of the validator (validating or falsifing). */
     validatorWallet: string;
-    stakedValidator: number; // rename this, it sounds like a wallet
+
+    /**The amount of Rosetta staked against this validation. */
+    validationStake: number;
+
+    /**??? */
     jurorStake: number;
+
+    /**The amount of Rosetta forfeited by the validator to pay the jurors. */
     jurorFees: number;
+
+    /**The amount of jurors in the trial. */
     trialSize: number;
-    prosecutionEvidence: string[]; // rename this to represent transactions?
-    defenseEvidence: string[], // rename this to represent transactions?
+
     pastVote: [],
     currentVote: [],
     currentJurors: [],
+
+    /**Current state of the tribunal. */
     currentState: TribunalState,
-    until: number; // timestamp
+
+    /**The timestamp where the tribunal automatically ends. */
+    until: number;
+}
+
+export type FalsificationTrial = Trial & {
+    /**Proscecution evidence in the form of Arweave transactions. */
+    prosecutionEvidence: string[]; // rename this to represent transactions?
+
+    /**Defense evidence in the form of Arweave transactions. */
+    defenseEvidence: string[], // rename this to represent transactions?
 }

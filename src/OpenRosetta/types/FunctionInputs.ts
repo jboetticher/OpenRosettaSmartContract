@@ -59,6 +59,7 @@ export function assertNetworkConfig(config: string | NetworkConfig): NetworkConf
     assertNumber(config.juryDutyFee, 'config.juryDutyFee');
     assertNumber(config.initialJury, 'config.initialJury');
     assertNumber(config.validationStake, 'config.validationStake');
+    assertNumber(config.falsificationStake, 'config.falsificationStake');
     assertNumber(config.transactionFee, 'config.transactionFee');
     assertNumber(config.trialDuration, 'config.trialDuration');
     assertNumber(config.minMint, 'config.minMint');
@@ -197,5 +198,22 @@ export class VoteOnNetworkChangeProposalInput {
         assertNumber(networkChangeId, "networkChangeId");
         assertBoolean(vote, "vote");
         return new VoteOnNetworkChangeProposalInput(networkChangeId, vote);
+    }
+}
+
+export class CreateFalsificationTribunalInput {
+    paperId: number;
+    evidenceTx: string;
+
+    constructor(paperId: number, evidenceTx: string) {
+        this.paperId = paperId;
+        this.evidenceTx = evidenceTx;
+    }
+
+    static validateInput(paperId: number, evidenceTx: string):
+        CreateFalsificationTribunalInput {
+        assertNumber(paperId, "networkChangeId");
+        assertString(evidenceTx, evidenceTx);
+        return new CreateFalsificationTribunalInput(paperId, evidenceTx);
     }
 }

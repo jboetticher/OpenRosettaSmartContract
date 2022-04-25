@@ -5,6 +5,7 @@ import * as Inputs from "./types/FunctionInputs";
 import RolesHandler from "./RolesHandler";
 import PaperHandler from "./PaperHandler";
 import AdminHandler from "./AdminHandler";
+import TribunalHandler from "./TribunalHandler";
 
 //declare const SmartWeave: SmartWeaveGlobal;
 declare const logger: RedStoneLogger;
@@ -39,6 +40,7 @@ export async function handle(state: NetworkState, action: ContractInput) {
     const walHandler = new WalletHandler(state);
     const pprHandler = new PaperHandler(state);
     const admnHandler = new AdminHandler(state, ROLES);
+    const tbnlHandler = new TribunalHandler(state);
 
     // Different switches handle all of the public facing actions.
     // Should be made up of logic classes.
@@ -64,7 +66,7 @@ export async function handle(state: NetworkState, action: ContractInput) {
             const input = Inputs.VoteOnNetworkChangeProposalInput
                 .validateInput(parameters.networkChangeId, parameters.vote);
             roleHandler.requireTieredRole(caller, ROLES.admin);
-            if(!state.administrators[caller]?.canVote)
+            if (!state.administrators[caller]?.canVote)
                 throw new ContractError("Administrator does not have voting rights!");
             admnHandler.voteOnNetworkChangeProposal(
                 caller, input.networkChangeId, input.vote);
@@ -101,6 +103,12 @@ export async function handle(state: NetworkState, action: ContractInput) {
                 input.publishTimestamp, input.authors, input.authorWeights);
         }
             return { state };
+        case "createFalsificationTribunal": {
+            roleHandler.requireTieredRole(caller, ROLES.author);
+            const input = Inputs.CreateFalsificationTribunalInput
+                .validateInput(parameters.paperURL, parameters.evidenceTx);
+            tbnlHandler.createFalsificationTribunal(caller, input.paperId, input.evidenceTx);
+        }
         default:
             throw ContractError("Function is not defined.");
     }

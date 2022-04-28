@@ -50,6 +50,9 @@ export type NetworkState = {
      */
     trials: Trial[];
 
+    /**The pool of available jurors. */
+    juryPool: string[];
+
     /**
      * An array of all of the current network change proposals.
      * The key of the array is the changeProposalId.
@@ -103,6 +106,9 @@ export type RosettaWallet = {
     /**The role value associated with this user. */
     role: number,
 
+    /**The amount of network trust associated with this user. */
+    trust: number,
+
     /**
      * An array of paper stakes (for publishing) within the wallet.
      * The key of the array is the id of the paper.
@@ -113,7 +119,10 @@ export type RosettaWallet = {
      * An array of knowlege tokens that the wallet holds.
      * The key of the array is the id of the paper.
      */
-    knowledgeTokens: KnowledgeWallet[]
+    knowledgeTokens: KnowledgeWallet[],
+
+    /**Rosetta that this user has staked against jury duty. */
+    juryStake: number
 }
 
 /**A type that holds knowledge tokens. */

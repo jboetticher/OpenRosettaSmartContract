@@ -1,5 +1,5 @@
 import { RedStoneLogger, SmartWeaveGlobal } from "redstone-smartweave";
-import { FalsificationTrial, NetworkState, Trial, TribunalState } from "./types/StateTypes";
+import { FalsificationTrial, NetworkState, RosettaWallet, Trial, TribunalState } from "./types/StateTypes";
 declare const ContractError;
 declare const SmartWeave: SmartWeaveGlobal;
 
@@ -13,6 +13,39 @@ export default class TribunalHandler {
 
     constructor(state: NetworkState) {
         this.state = state;
+    }
+
+    /**
+     * Adds a new juror to the pool of available jurors.
+     * @param newJuror The juror who wishes to join the jury pool.
+     */
+    joinJuryPool(newJuror: string) {
+        const wallet: RosettaWallet = this.state.wallets[newJuror];
+        const juryStake = this.state.config.juryDutyStake;
+        if(wallet.trust < 1) 
+            throw new ContractError("A juror must have a trust of 1.");
+        if(wallet.amount < juryStake) 
+            throw new ContractError("Not enough Rosetta in wallet to cover jury duty stake.");
+        
+        wallet.amount -= juryStake;
+        wallet.juryStake += juryStake;
+        this.state.juryPool.push(newJuror);
+    }
+
+    /**
+     * Removes a juror from the pool of available jurors.
+     * @param oldJuror The juror to remove from the jury pool.
+     */
+    leaveJuryPool(oldJuror: string) {
+        const jurorIndex = this.state.juryPool.findIndex(x => x === oldJuror);
+        if(jurorIndex === -1) 
+            throw new ContractError("Contract caller was not found in the jury pool.");
+
+        this.state.juryPool.splice(jurorIndex, 1);
+
+        const wallet: RosettaWallet = this.state.wallets[oldJuror];
+        wallet.amount += wallet.juryStake;
+        wallet.juryStake = 0;
     }
 
     /**
@@ -69,4 +102,5 @@ export default class TribunalHandler {
         trial.prosecutionEvidence = [evidenceTx];
         trial.defenseEvidence = [];
     }
+    
 }

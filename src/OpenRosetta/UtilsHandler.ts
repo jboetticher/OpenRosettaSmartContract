@@ -45,7 +45,9 @@ export default class UtilsHandler {
             amount: 0,
             role: 0,
             paperStakes: [],
-            knowledgeTokens: []
+            knowledgeTokens: [],
+            trust: 0,
+            juryStake: 0
         }
     }
 

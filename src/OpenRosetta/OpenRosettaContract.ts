@@ -109,20 +109,17 @@ export async function handle(state: NetworkState, action: ContractInput) {
                 .validateInput(parameters.paperURL, parameters.evidenceTx);
             tbnlHandler.createFalsificationTribunal(caller, input.paperId, input.evidenceTx);
         }
+        case "joinJuryPool": {
+            roleHandler.requireTieredRole(caller, ROLES.author);
+            tbnlHandler.joinJuryPool(caller);
+        }
+            return { state };
+        case "leaveJuryPool": {
+            roleHandler.requireTieredRole(caller, ROLES.author);
+            tbnlHandler.leaveJuryPool(caller);
+        }
+            return { state };
         default:
             throw ContractError("Function is not defined.");
     }
 }
-
-
-
-
-// Account handler
-// Validation handler
-
-/**
- * Paper Handler:
- *  Create/publish
- *      Author contribution + management
- *  Purchase
- */

@@ -36,7 +36,7 @@ describe('Wallet: transfer', () => {
     const newWallets: ({ wallet: JWKInterface; walletAddress: string; })[] = [];
     let contract: Contract<any>;
     it('should allow two users to transfer rosetta.', async () => {
-        // Create two wallets.
+        // Create four wallets.
         for (let i = 0; i < 4; i++) newWallets.push(await createNewWallet(arweave));
 
         // Creates a state with 1000 in each wallet.

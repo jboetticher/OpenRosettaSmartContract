@@ -103,12 +103,14 @@ export async function handle(state: NetworkState, action: ContractInput) {
                 input.publishTimestamp, input.authors, input.authorWeights);
         }
             return { state };
+        // paperId: number, evidenceTx: string
         case "createFalsificationTribunal": {
             roleHandler.requireTieredRole(caller, ROLES.author);
             const input = Inputs.CreateFalsificationTribunalInput
-                .validateInput(parameters.paperURL, parameters.evidenceTx);
+                .validateInput(parameters.paperId, parameters.evidenceTx);
             tbnlHandler.createFalsificationTribunal(caller, input.paperId, input.evidenceTx);
         }
+            return { state };
         case "joinJuryPool": {
             roleHandler.requireTieredRole(caller, ROLES.author);
             tbnlHandler.joinJuryPool(caller);

@@ -250,9 +250,6 @@ export type Trial = {
     /**The amount of Rosetta staked against this validation. */
     validationStake: number;
 
-    /**??? */
-    jurorStake: number;
-
     /**The amount of Rosetta forfeited by the validator to pay the jurors. */
     jurorFees: number;
 

@@ -212,8 +212,8 @@ export class CreateFalsificationTribunalInput {
 
     static validateInput(paperId: number, evidenceTx: string):
         CreateFalsificationTribunalInput {
-        assertNumber(paperId, "networkChangeId");
-        assertString(evidenceTx, evidenceTx);
+        assertNumber(paperId, "paperId");
+        assertString(evidenceTx, "evidenceTx");
         return new CreateFalsificationTribunalInput(paperId, evidenceTx);
     }
 }

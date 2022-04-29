@@ -35,6 +35,15 @@ npm install -g smartweave
 Creates a local "gateway" server that allows us to test our SmartWeave contracts without 
 having to deploy them by spending Arweave crypto. The CLI tool to start it is `npx arlocal`.
 
+### RedStone SmartWeave Contracts
+We are using RedStone SmartWeave contracts, because they have a stronger developer environment than
+the first iteration of SmartWeave smart contracts. This includes things like logging, a stronger 
+testing environment, and built in caching through RedStone's deployment.  
+Learn more about RedStone smart contracts
+[here](https://github.com/redstone-finance/redstone-smartcontracts).
+Also consider completing RedStone academy for educational purposes
+[here](https://github.com/redstone-finance/redstone-academy).
+
 ## Building
 We use TypeScript in our project to help with testing, documentation, and technical debt. 
 SmartWeave doesn't natively support TypeScript, so we must transpile TypeScript to vanilla
@@ -45,3 +54,13 @@ view the `build.js` script that accomplishes this in the scripts folder.
 To deploy to Arweave with SmartWeave, you will need your keyfile for your account. The
 project is set up to use a keyfile named `keyfile.json`, stored in the main directory. 
 Take a look at the scripts to see how to customize your deployments.
+
+## Testing
+We use jest to run our test environment. Each test suite in jest requires a new instance of ArLocal,
+otherwise a SQL error occurs. This is handled by the default function of `testSetup.ts`, which uses
+a random port. It is unlikely for ports to conflict, but if they do, then you can either attempt to 
+run the test suites again or run them individually.
+
+## To-Do
+- Refactor ContractException tests to do dry runs and check for an exception.
+- Refactor inputs in tests to use input types.

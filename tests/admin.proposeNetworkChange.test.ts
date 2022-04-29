@@ -5,7 +5,7 @@ import Arweave from "arweave";
 import { JWKInterface } from "arweave/node/lib/wallet";
 import { Contract, SmartWeave } from "redstone-smartweave";
 import testSetup, { createNewWallet, mineBlock, SmartWeaveTestSuite } from "./testSetup";
-import { NetworkChangeProposal, NetworkChange, NetworkChangeIds } from "../src/OpenRosetta/types/StateTypes";
+import { NetworkChangeProposal, NetworkChange, NetworkChangeIds, NetworkConfig } from "../src/OpenRosetta/types/StateTypes";
 
 describe('Admin: proposeNetworkChange', () => {
     let wallet: JWKInterface;
@@ -238,7 +238,7 @@ describe('Admin: proposeNetworkChange', () => {
     });
 
     it('should pass when proposing a proper change to network config data.', async () => {
-        const newConfig = {
+        const newConfig: NetworkConfig = {
             treasuryWallet: newWallets[1].walletAddress,
             publicationStake: 1000,
             knowledgeTokenAuthorMint: 1500,
@@ -249,11 +249,12 @@ describe('Admin: proposeNetworkChange', () => {
             juryDutyFee: 1000,
             initialJury: 1000,
             validationStake: 1000,
+            falsificationStake: 500,
             transactionFee: 10,
             trialDuration: 1000,
             minMint: 150, 
             currentMint: 10,
-            decayRate: 2.45
+            decayRate: 2.45,
         };
 
         // Attempt to propose a network change.

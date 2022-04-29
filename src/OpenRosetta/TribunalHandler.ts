@@ -78,13 +78,12 @@ export default class TribunalHandler {
             paperId: paperId,
             validatorWallet: caller,
             validationStake: validatorStake,
-            jurorStake: 0,
             jurorFees: config.juryDutyFee * config.initialJury,
             trialSize: config.initialJury,
             pastVote: [],
             currentVote: [],
             currentJurors: [],
-            currentState: TribunalState.Appealed,
+            currentState: TribunalState.PreJury,
             until: SmartWeave.block.timestamp + config.trialDuration
         };
         this.state.trials[paperId] = trial;

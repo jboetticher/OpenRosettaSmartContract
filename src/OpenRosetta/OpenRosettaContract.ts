@@ -121,18 +121,20 @@ export async function handle(state: NetworkState, action: ContractInput) {
             tbnlHandler.leaveJuryPool(caller);
         }
             return { state };
+        // paperId: number, amount: number, pool: number
         case "volunteerReplicationDonation": {
             roleHandler.requireTieredRole(caller, ROLES.participant);
             const input = Inputs.VolunteerReplicationDonateInput
-                .validateInput(parameters.paperId, parameters.number, parameters.pool);
+                .validateInput(parameters.paperId, parameters.amount, parameters.pool);
             pprHandler.volunteerReplicationDonation(
                 caller, input.paperId, input.amount, input.pool);
         }
             return { state };
+        // paperId: number, amount: number
         case "volunteerFalsificationDonate": {
             roleHandler.requireTieredRole(caller, ROLES.participant);
             const input = Inputs.VolunteerFalsificationDonateInput
-                .validateInput(parameters.paperId, parameters.number);
+                .validateInput(parameters.paperId, parameters.amount);
             pprHandler.volunteerFalsificationDonate(caller, input.paperId, input.amount);
         }
             return { state };

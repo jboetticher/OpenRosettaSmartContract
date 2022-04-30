@@ -6,6 +6,7 @@ These are the smart contracts that govern the Open Rosetta project. They are pow
 ## Developer Environment
 The developer environment depends on the following tools:
 - [SmartWeave](https://github.com/ArweaveTeam/SmartWeave)
+- [RedStone SmartWeave Contracts](https://github.com/redstone-finance/redstone-smartcontracts)
 - [ArLocal](https://github.com/textury/arlocal)
 - TypeScript
 - ESLint
@@ -24,12 +25,6 @@ The most important paradigm shift is scaling: if the user has to download all of
 transactions, then you have to ensure that your data structure doesn't bloat to many gigabytes.  
 Additionally, without a caching solution, every smart contract is vulnerable to a denial of 
 service attack by bloating transactions. SmartWeave contracts are in early development.  
-
-#### **Installing SmartWeave**
-You must have smartweave installed on your device to deploy these contracts:
-```
-npm install -g smartweave
-```
 
 ### ArLocal
 Creates a local "gateway" server that allows us to test our SmartWeave contracts without 
@@ -64,3 +59,23 @@ run the test suites again or run them individually.
 ## To-Do
 - Refactor ContractException tests to do dry runs and check for an exception.
 - Refactor inputs in tests to use input types.
+
+## Architecture Notes
+SmartWeave contracts are all one file, but I've divided up the logic into a couple of components.  
+
+First, there is the input validation. There's a file in the `src/OpenRosetta/types` folder that 
+has a class for every external function that can be called by a user. These classes should make sure
+that the right types are being put into the classes.  
+One way to improve this system could be to have functions within the logic classes simply take in the 
+inputs defined by the input validation classes. Worth looking into?  
+Another thing to think about is whether or not ALL validation should be in the input classes. It's currently
+only type based checks, not logic checks. Maybe the logic should stay with the logic classes?  
+
+Second, there is the role management. Roles for every user are defined in their wallets, and the "enum" 
+is defined within the main `OpenRosettaContract.ts` file. The RolesHandler helps check to make sure that
+the caller has the correct permissions for each external function.  
+
+Third, there are the logic classes themselves, which are spread across multiple "Handler" files. These 
+are arbitrarily divided with very minor encapsulation, but that's better than a single monolithic file that 
+contains every function. This system is a candidate for refactoring, but as it stands I'm happy with how
+it works.

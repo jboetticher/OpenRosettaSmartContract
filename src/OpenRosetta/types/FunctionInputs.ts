@@ -217,3 +217,40 @@ export class CreateFalsificationTribunalInput {
         return new CreateFalsificationTribunalInput(paperId, evidenceTx);
     }
 }
+
+export class VolunteerReplicationDonateInput {
+    paperId: number;
+    amount: number;
+    pool: number;
+
+    constructor(paperId: number, amount: number, pool: number) {
+        this.paperId = paperId;
+        this.amount = amount;
+        this.pool = pool;
+    }
+
+    static validateInput(paperId: number, amount: number, pool: number):
+        VolunteerReplicationDonateInput {
+        assertNumber(paperId, "paperId");
+        assertNumber(amount, "amount");
+        assertNumber(pool, "pool");
+        return new VolunteerReplicationDonateInput(paperId, amount, pool);
+    }
+}
+
+export class VolunteerFalsificationDonateInput {
+    paperId: number;
+    amount: number;
+
+    constructor(paperId: number, amount: number) {
+        this.paperId = paperId;
+        this.amount = amount;
+    }
+
+    static validateInput(paperId: number, amount: number):
+        VolunteerFalsificationDonateInput {
+        assertNumber(paperId, "paperId");
+        assertNumber(amount, "amount");
+        return new VolunteerFalsificationDonateInput(paperId, amount);
+    }
+}

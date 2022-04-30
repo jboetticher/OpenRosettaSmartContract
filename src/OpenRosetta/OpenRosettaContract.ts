@@ -121,6 +121,21 @@ export async function handle(state: NetworkState, action: ContractInput) {
             tbnlHandler.leaveJuryPool(caller);
         }
             return { state };
+        case "volunteerReplicationDonation": {
+            roleHandler.requireTieredRole(caller, ROLES.participant);
+            const input = Inputs.VolunteerReplicationDonateInput
+                .validateInput(parameters.paperId, parameters.number, parameters.pool);
+            pprHandler.volunteerReplicationDonation(
+                caller, input.paperId, input.amount, input.pool);
+        }
+            return { state };
+        case "volunteerFalsificationDonate": {
+            roleHandler.requireTieredRole(caller, ROLES.participant);
+            const input = Inputs.VolunteerFalsificationDonateInput
+                .validateInput(parameters.paperId, parameters.number);
+            pprHandler.volunteerFalsificationDonate(caller, input.paperId, input.amount);
+        }
+            return { state };
         default:
             throw ContractError("Function is not defined.");
     }

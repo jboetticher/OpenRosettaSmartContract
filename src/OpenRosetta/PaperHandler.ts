@@ -1,4 +1,4 @@
-import { NetworkState, RosettaWallet } from "./types/StateTypes";
+import { NetworkState, PaperState, RosettaWallet } from "./types/StateTypes";
 import { SmartWeaveGlobal, RedStoneLogger } from "redstone-smartweave";
 import UtilsHandler from "./UtilsHandler";
 
@@ -106,13 +106,83 @@ export default class PaperHandler {
             invalidated: false,
             stakingWallet: creator,
             impactScore: 0,
+            extraFalsificationPool: 0,
             /**
              * NOTE:
              * There is no documentation yet on how many replication pools there are. We assume 3.
              * There is no documentation on how many paper tokens RP1 gets vs RP2. Assuming equal division.
              */
             replicationRosettaPool: [0, 0, 0],
+            replicationCount: 0,
             replicationReservedTokens: replicationMint
         };
+    }
+
+    /**
+     * Allows a participant to donate Rosetta to one of a paper's replication pools.
+     * @param volunteer The user adding a stake to a pool.
+     * @param paperId The paper id to add a stake to.
+     * @param amount How much Rosetta to donate to the pool.
+     * @param pool The pool id to donate to.
+     */
+    volunteerReplicationDonation(volunteer: string, paperId: number, amount: number, pool: number) {
+        const paper: PaperState = this.state.papers[paperId];
+        if(paper === undefined)
+            throw new ContractError(`Paper ${paperId} doesn't exist`);
+        // NOTE: This is a default value, 3. Could be changed later.
+        if(pool < 0 || pool >= 3 || !Number.isInteger(pool)) 
+            throw new ContractError('There are only 3 pools.');
+        if(paper.replicationCount > pool)
+            throw new ContractError(`There have already been ${paper.replicationCount} replications.`);
+        if(paper.invalidated)
+            throw new ContractError('Paper is invalidated.');
+
+        const volunteerWallet: RosettaWallet = this.state.wallets[volunteer];
+        if(volunteerWallet === undefined)
+            throw new ContractError("Volunteer's wallet doesn't exist.");
+        if(volunteerWallet.amount < amount)
+            throw new ContractError(`Volunteer does not have enough Rosetta to donate ${amount}.`);
+
+        paper.replicationRosettaPool[pool] += amount;
+        volunteerWallet.amount -= amount;
+    }
+
+    /**
+     * Allows a participant to donate Rosetta to a paper's falsification pool.
+     * @param volunteer The user adding a donation to the pool.
+     * @param paperId The paper id to add a donation to.
+     * @param amount How much Rosetta to donate to the pool.
+     */    
+    volunteerFalsificationDonate(volunteer: string, paperId: number, amount: number) {
+        const paper: PaperState = this.state.papers[paperId];
+        if(paper === undefined)
+            throw new ContractError(`Paper ${paperId} doesn't exist`);
+        if(paper.invalidated)
+            throw new ContractError('Paper is already invalidated.');
+
+        const volunteerWallet: RosettaWallet = this.state.wallets[volunteer];
+        if(volunteerWallet === undefined)
+            throw new ContractError("Volunteer's wallet doesn't exist.");
+        if(volunteerWallet.amount < amount)
+            throw new ContractError(`Volunteer does not have enough Rosetta to donate ${amount}.`);
+
+        paper.extraFalsificationPool += amount;
+        volunteerWallet.amount -= amount;
+    }
+
+    /**
+     * Gets the total falsification stake on a paper.
+     * @param paperId The paperId.
+     * @returns The total falsification stake (in Rosetta) on a paper.
+     */
+    totalFalsificationStake(paperId: number) {
+        const paper: PaperState = this.state.papers[paperId];
+        if(paper === undefined)
+            throw new ContractError(`Paper ${paperId} doesn't exist`); 
+        const wallet: RosettaWallet = this.state.wallets[paper.stakingWallet];
+        if(wallet === undefined || wallet.paperStakes[paperId] === undefined) 
+            return paper.extraFalsificationPool;
+        
+        return wallet.paperStakes[paperId].amount + paper.extraFalsificationPool;
     }
 }

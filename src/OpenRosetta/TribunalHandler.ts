@@ -101,5 +101,4 @@ export default class TribunalHandler {
         trial.prosecutionEvidence = [evidenceTx];
         trial.defenseEvidence = [];
     }
-    
 }

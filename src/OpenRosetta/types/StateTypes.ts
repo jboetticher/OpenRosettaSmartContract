@@ -173,20 +173,20 @@ export type PaperState = {
     /**The wallet who staked rosetta to publish the paper. Source of falsification. */
     stakingWallet: string;
 
+    /**Rosetta in addition to that in the staking wallet for the falsification of this paper. */
+    extraFalsificationPool: number;
+
     /**The paper's current impact score. */
     impactScore: number;
 
     /**Amount of rosetta tokens reserved for the replication pool. */
     replicationRosettaPool: number[];
 
+    /**The amount of times the paper has been replicated. */
+    replicationCount: number;
+
     /**The knowledge tokens reserved for the replication pool. */
     replicationReservedTokens: number;
-
-    /**
-     * NOTE: 
-     * I have removed the falsificationPool since it was redundant.
-     * Instead, it will look at the stake of the "stakingWallet".
-     */
 }
 
 /**A type that represents a change to the network config. */

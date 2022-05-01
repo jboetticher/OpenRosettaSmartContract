@@ -42,8 +42,8 @@ describe('Paper: publishPaper', () => {
         knowledgeTokenTreasuryMint?: number; publicationLockDuration?: number;
     };
     it('should allow an author to publish a paper.', async () => {
-        // Create two wallets.
-        for (let i = 0; i < 3; i++) newWallets.push(await createNewWallet(arweave));
+        // Create 4 wallets.
+        for (let i = 0; i < 4; i++) newWallets.push(await createNewWallet(arweave));
 
         // Creates a state with 1000 in each wallet.
         const walletBalances = {};
@@ -52,6 +52,8 @@ describe('Paper: publishPaper', () => {
         walletBalances[newWallets[1].walletAddress] =
             { amount: 1000, role: 1, knowledgeTokens: [] };
         walletBalances[newWallets[2].walletAddress] =
+            { amount: 10, role: 65000, knowledgeTokens: [] };
+        walletBalances[newWallets[3].walletAddress] =
             { amount: 1000, role: 65000, knowledgeTokens: [] };
         networkConfig = {
             treasuryWallet: newWallets[2].walletAddress,
@@ -112,8 +114,56 @@ describe('Paper: publishPaper', () => {
                 paperData.authorWeights[1] / totalWeight);
     });
 
-    // TODO: permissions & negative cases
+    it('should not allow a user with too little Rosetta to publish a paper.', async () => {
+        // It should fail.
+        contract.connect(newWallets[2].wallet);
+        const result = await contract.dryWrite({
+            function: 'publishPaper',
+            parameters: paperData
+        });
+        expect(result.type).toBe('error');
+    });
 
+    it('should not allow improper author weights.', async () => {
+        // Attempt to publish a new paper.
+        const paperDataArray = {
+            paperURL: "https://google.com/",
+            paperSymbol: "DAB",
+            publishTimestamp: Date.now(),
+            authors: [newWallets[0].walletAddress, newWallets[1].walletAddress],
+            authorWeights: [10]
+        };
+        const paperDataDictionary = {
+            paperURL: "https://google.com/",
+            paperSymbol: "DAB",
+            publishTimestamp: Date.now(),
+            authors: { 0: newWallets[0].walletAddress },
+            authorWeights: { 0: 10, 1: 25 }
+        };
+
+        // It should fail with arrays
+        contract.connect(newWallets[0].wallet);
+        let result = await contract.dryWrite({
+            function: 'publishPaper',
+            parameters: paperDataArray
+        });
+        expect(result.type).toBe('error');
+
+        result = await contract.dryWrite({
+            function: 'publishPaper',
+            parameters: paperDataDictionary
+        });
+        expect(result.type).toBe('error');
+    });
+
+    it('should not allow a participant to publish a paper.', async () => {
+        contract.connect(newWallets[1].wallet);
+        const result = await contract.dryWrite({
+            function: 'publishPaper',
+            parameters: paperData
+        });
+        expect(result.type).toBe('error');
+    })
 
     afterAll(async () => {
         await arlocal.stop();

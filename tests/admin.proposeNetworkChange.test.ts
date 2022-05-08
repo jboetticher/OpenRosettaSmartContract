@@ -66,7 +66,7 @@ describe('Admin: proposeNetworkChange', () => {
                 initialJury: 0,
                 validationStake: 0,
                 transactionFee: 0,
-                trialDuration: 0,
+                juryDuration: 0,
                 minMint: 0,
                 currentMint: 0,
                 decayRate: 0
@@ -182,7 +182,7 @@ describe('Admin: proposeNetworkChange', () => {
                             initialJury: 0,
                             validationStake: 0,
                             transactionFee: 0,
-                            trialDuration: 0,
+                            juryDuration: 0,
                             //minMint: 0, removed for the test
                             currentMint: 0,
                             decayRate: 0
@@ -220,7 +220,7 @@ describe('Admin: proposeNetworkChange', () => {
                             initialJury: 0,
                             validationStake: 0,
                             transactionFee: "this should be a number",
-                            trialDuration: 0,
+                            juryDuration: 0,
                             minMint: 0, 
                             currentMint: 0,
                             decayRate: 0
@@ -251,7 +251,8 @@ describe('Admin: proposeNetworkChange', () => {
             validationStake: 1000,
             falsificationStake: 500,
             transactionFee: 10,
-            trialDuration: 1000,
+            settlementDuration: 200,
+            juryDuration: 1000,
             minMint: 150, 
             currentMint: 10,
             decayRate: 2.45,

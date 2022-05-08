@@ -4,7 +4,7 @@ import ArLocal from "arlocal";
 import Arweave from "arweave";
 import { JWKInterface } from "arweave/node/lib/wallet";
 import { Contract, SmartWeave } from "redstone-smartweave";
-import { TribunalState } from "../src/OpenRosetta/types/StateTypes";
+import { TribunalOutcome, TribunalState } from "../src/OpenRosetta/types/StateTypes";
 import testSetup, { createNewWallet, mineBlock, SmartWeaveTestSuite } from "./testSetup";
 
 describe('Admin: onboardAuthor', () => {
@@ -72,7 +72,7 @@ describe('Admin: onboardAuthor', () => {
                 falsificationStake: FALSIFICATION_STAKE,
                 juryDutyFee: 10,
                 initialJury: 3,
-                trialDuration: 10000,
+                juryDuration: 10000,
             }
         });
 
@@ -94,7 +94,7 @@ describe('Admin: onboardAuthor', () => {
         const curTrial = state.trials[0];
         expect(curTrial).toBeDefined();
         expect(curTrial.paperId).toBe(0);
-        expect(curTrial.validatorWallet).toBe(activeWallet.walletAddress);
+        expect(curTrial.validator).toBe(activeWallet.walletAddress);
         expect(curTrial.validationStake).toBe(FALSIFICATION_STAKE);
         expect(curTrial.jurorFees).toBe(30);
         expect(curTrial.trialSize).toBe(3);
@@ -166,7 +166,7 @@ describe('Admin: onboardAuthor', () => {
         const curTrial = state.trials[1];
         expect(curTrial).toBeDefined();
         expect(curTrial.paperId).toBe(1);
-        expect(curTrial.validatorWallet).toBe(activeWallet.walletAddress);
+        expect(curTrial.validator).toBe(activeWallet.walletAddress);
         expect(curTrial.validationStake).toBe(FALSIFICATION_STAKE);
         expect(curTrial.jurorFees).toBe(30);
         expect(curTrial.trialSize).toBe(3);

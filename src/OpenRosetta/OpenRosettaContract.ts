@@ -103,12 +103,29 @@ export async function handle(state: NetworkState, action: ContractInput) {
                 input.publishTimestamp, input.authors, input.authorWeights);
         }
             return { state };
+        
         // paperId: number, evidenceTx: string
         case "createFalsificationTribunal": {
             roleHandler.requireTieredRole(caller, ROLES.author);
             const input = Inputs.CreateFalsificationTribunalInput
                 .validateInput(parameters.paperId, parameters.evidenceTx);
             tbnlHandler.createFalsificationTribunal(caller, input.paperId, input.evidenceTx);
+        }
+            return { state };
+        // paperId: number, vote: TribunalOutcome, explanation: string
+        case "voteOnTribunalSettlement": {
+            roleHandler.requireTieredRole(caller, ROLES.author);
+            const input = Inputs.VoteOnTribunalSettlementInput
+                .validateInput(parameters.paperId, parameters.vote, parameters.explanation);
+            tbnlHandler.voteOnTribunalSettlement(
+                caller, input.paperId, input.vote, input.explanation);
+        }
+            return { state };
+        case "completeSettlement": {
+            roleHandler.requireTieredRole(caller, ROLES.author);
+            const input = Inputs.CompleteSettlementInput
+                .validateInput(parameters.paperId);
+            tbnlHandler.completeSettlement(caller, input.paperId);
         }
             return { state };
         case "joinJuryPool": {
@@ -121,6 +138,7 @@ export async function handle(state: NetworkState, action: ContractInput) {
             tbnlHandler.leaveJuryPool(caller);
         }
             return { state };
+        
         // paperId: number, amount: number, pool: number
         case "volunteerReplicationDonation": {
             roleHandler.requireTieredRole(caller, ROLES.participant);

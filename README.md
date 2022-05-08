@@ -60,6 +60,7 @@ run the test suites again or run them individually.
 - Refactor ContractException tests to do dry runs and check for an exception.
 - Refactor inputs in tests to use input types.
 - Add easy/modular standard tests (no wallet, not enough Rosetta, wrong permissions).
+- Add fuzzing to input tests.
 
 ## Architecture Notes
 SmartWeave contracts are all one file, but I've divided up the logic into a couple of components.  

@@ -25,8 +25,8 @@ export type NetworkState = {
     nextNetworkChangeId: number;
 
     /**
-     * An array of all administrator configurations on the network.
-     * The key of the array is each administrator's wallet.
+     * A dictionary of all administrator configurations on the network.
+     * The key of the dictionary is each administrator's wallet.
      */
     administrators: AdministratorState[];
 
@@ -34,21 +34,25 @@ export type NetworkState = {
     config: NetworkConfig;
 
     /**
-     * An array of all wallets that hold or have held rosetta related tokens.
-     * The key of the array is the address.
+     * A dictionary of all wallets that hold or have held rosetta related tokens.
+     * The key of the dictionary is the address.
      */
     wallets: RosettaWallet[];
 
     /**
-     * An array of all of the papers published.
-     * The key of the array is the paper id.
+     * A dictionary of all of the papers published.
+     * The key of the dictionary is the paper id.
      */
     papers: PaperState[];
 
     /**
-     * An array of all of the trials.
+     * An dictionary of all of the active trials.
+     * The key of the dictionary is the paperId.
      */
     trials: Trial[];
+
+    /**An array of past trials. */
+    pastTrials: Trial[];
 
     /**The pool of available jurors. */
     juryPool: string[];
@@ -80,14 +84,26 @@ export type NetworkConfig = {
     /**How long an author's Rosetta & tokens are locked after a publication. */
     publicationLockDuration: number;
 
+    /**How long the settlement duration of a trial should list. */
+    settlementDuration: number;
 
+    /**How long the jury duration of a trial should last. */
+    juryDuration: number;
+
+    /**The amount of Rosetta needed to stake to become a juror. */
     juryDutyStake: number;
+
+    /**The amount of Rosetta reduced as penalty for being in the minority. */
+    juryMinorityPenalty: number;
+
+    /**The amount of Rosetta needed to pay a juror. */
     juryDutyFee: number;
+
+    transactionFee: number;
+
     initialJury: number;
     validationStake: number;
     falsificationStake: number;
-    transactionFee: number;
-    trialDuration: number;
     minMint: number;
     currentMint: number;
     decayRate: number;
@@ -235,8 +251,19 @@ export enum TribunalState {
     PreJury,                            // Validator brings evidence & charges against paper
     Settlement,                         // Amicable settlement occurs without jury
     JuryDeliberation,                   // Jury is formed and is deciding their votes
-    Concluded,                          // Tribunal concludes
+    ClosedWithAppealOption,             // Tribunal concludes, with an option for an appeal.
+    Closed,                             // Tribunal concludes, with no chance of an appeal.
     Appealed                            // An appeal was created, a new tribunal is formed.
+}
+
+/**Available outcomes of a tribunal */
+// eslint-disable-next-line no-shadow
+export enum TribunalOutcome {
+    NoChanges,                          // No change to the paper has been made (acquittal or poor validation).
+    Validation,                         // If the trial successfully validated the paper.
+    Mistake,                            // If it has been found that there is a mistake in the paper.
+    Fraud,                              // If it has been found that the paper committed fraud.
+    MaliciousActivity                   // If it has been found that the paper committed malicious activity.
 }
 
 /**A type that represents a trial for a paper. */
@@ -245,7 +272,7 @@ export type Trial = {
     paperId: number;
 
     /**The wallet of the validator (validating or falsifing). */
-    validatorWallet: string;
+    validator: string;
 
     /**The amount of Rosetta staked against this validation. */
     validationStake: number;
@@ -256,15 +283,50 @@ export type Trial = {
     /**The amount of jurors in the trial. */
     trialSize: number;
 
-    pastVote: [],
-    currentVote: [],
-    currentJurors: [],
+    /**
+     * A dictionary of settlement votes for the prejury step. 
+     * True is pro settlement, false is against settlement, undefined means no vote.
+     * The key is the wallet of the address.
+     */
+    settlementVotes: TribunalOutcome[];
+
+    /**
+     * A dictionary of settlement documents for the prejury step. 
+     * The key is the wallet of the address who published the document.
+     */
+    settlementDocuments: string[];
+
+    /**The outcome of the trial. */
+    outcome: TribunalOutcome | false;
+
+    /**
+     * A dictionary of votes by the jury.
+     * The key is the wallet of the juror.
+     */
+    jurorVotes: TribunalOutcome[],
+
+    /**
+     * A dictionary of settlement documents for the prejurystep.
+     * The key is the wallet of the address who published the document.
+     */
+    jurorDocuments: string[],
+
+    /**An array of this trial's juror wallets.  */
+    currentJurors: string[],
 
     /**Current state of the tribunal. */
     currentState: TribunalState,
 
     /**The timestamp where the tribunal automatically ends. */
-    until: number;
+    juryUntil: number;
+
+    /**How long the settlement phase of the tribunal should last. */
+    settlementUntil: number;
+}
+
+export type ValidationTrial = Trial & {
+    /**The paperId of the paper that is being submitted as a validating study. */
+    validatingPaperId: number;
 }
 
 export type FalsificationTrial = Trial & {

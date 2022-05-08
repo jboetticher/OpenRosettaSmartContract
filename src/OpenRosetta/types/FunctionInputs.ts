@@ -1,4 +1,4 @@
-import { NetworkChange, NetworkChangeIds, NetworkConfig } from "./StateTypes";
+import { NetworkChange, NetworkChangeIds, NetworkConfig, TribunalOutcome } from "./StateTypes";
 
 declare const ContractError;
 
@@ -61,10 +61,11 @@ export function assertNetworkConfig(config: string | NetworkConfig): NetworkConf
     assertNumber(config.validationStake, 'config.validationStake');
     assertNumber(config.falsificationStake, 'config.falsificationStake');
     assertNumber(config.transactionFee, 'config.transactionFee');
-    assertNumber(config.trialDuration, 'config.trialDuration');
+    assertNumber(config.juryDuration, 'config.juryDuration');
     assertNumber(config.minMint, 'config.minMint');
     assertNumber(config.currentMint, 'config.currentMint');
     assertNumber(config.decayRate, 'config.decayRate');
+    assertNumber(config.settlementDuration, 'config.settlementDuration');
 
     return config as NetworkConfig;
 }
@@ -215,6 +216,41 @@ export class CreateFalsificationTribunalInput {
         assertNumber(paperId, "paperId");
         assertString(evidenceTx, "evidenceTx");
         return new CreateFalsificationTribunalInput(paperId, evidenceTx);
+    }
+}
+
+export class VoteOnTribunalSettlementInput {
+    paperId: number;
+    vote: TribunalOutcome;
+    explanation: string;
+
+    constructor(paperId: number, vote: TribunalOutcome, explanation: string) {
+        this.paperId = paperId;
+        this.vote = vote;
+        this.explanation = explanation;
+    }
+
+    static validateInput(paperId: number, vote: TribunalOutcome, explanation: string):
+        VoteOnTribunalSettlementInput {
+        assertNumber(paperId, "paperId");
+        assertString(explanation, "explanation");
+        if (!Object.values(TribunalOutcome).includes(vote))
+            throw new ContractError(`Tribunal outcome does not include ${vote}.`);
+        return new VoteOnTribunalSettlementInput(paperId, vote, explanation);
+    }
+
+}
+
+export class CompleteSettlementInput {
+    paperId: number;
+
+    constructor(paperId: number) {
+        this.paperId = paperId;
+    }
+
+    static validateInput(paperId: number): CompleteSettlementInput {
+        assertNumber(paperId, "paperId");
+        return new CompleteSettlementInput(paperId);
     }
 }
 

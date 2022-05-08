@@ -39,6 +39,23 @@ export default class UtilsHandler {
         return Number(randomBigInt % BigInt(max));
     }
 
+    /**
+     * Returns a number hashed from a value.
+     * @param str 
+     * @param seed 
+     * @returns 
+     */
+    static hashFnv32a(str: string, seed: number | undefined): number {
+        let i: number, l: number;
+        let hval: number = (seed === undefined) ? 0x811c9dc5 : seed;
+    
+        for (i = 0, l = str.length; i < l; i++) {
+            hval ^= str.charCodeAt(i);
+            hval += (hval << 1) + (hval << 4) + (hval << 7) + (hval << 8) + (hval << 24);
+        }
+        return hval >>> 0;
+    }
+
     /**Scaffolds the default (empty) wallet object. */
     static defaultWallet(): RosettaWallet {
         return {

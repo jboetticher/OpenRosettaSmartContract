@@ -35,6 +35,7 @@
   "dependencies": {
     "arweave": "^1.10.23",
     "babel-jest": "^27.5.1",
+    "jest-fuzz": "^0.0.1",
     "redstone-smartweave": "^0.4.53",
     "rimraf": "^3.0.2",
     "sqlite3": "^5.0.2",

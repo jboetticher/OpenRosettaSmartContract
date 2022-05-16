@@ -5,6 +5,7 @@ import Arweave from "arweave";
 import { JWKInterface } from "arweave/node/lib/wallet";
 import { Contract, SmartWeave } from "redstone-smartweave";
 import testSetup, { createNewWallet, mineBlock, SmartWeaveTestSuite } from "./testSetup";
+import * as Fuzz from 'jest-fuzz';
 
 describe('Admin: onboardAuthor', () => {
     let wallet: JWKInterface;
@@ -109,7 +110,11 @@ describe('Admin: onboardAuthor', () => {
         expect(state.wallets[newWallets[1].walletAddress].role).toBe(65000);
     });
 
+
+
+
     afterAll(async () => {
         await arlocal.stop();
     });
 });
+

@@ -5,6 +5,8 @@ import Arweave from "arweave";
 import { JWKInterface } from "arweave/node/lib/wallet";
 import { Contract, SmartWeave } from "redstone-smartweave";
 import testSetup, { createNewWallet, mineBlock, SmartWeaveTestSuite } from "./testSetup";
+import * as Fuzz from "../../SmartWeaveFuzzing";
+import { fuzz } from "../../SmartWeaveFuzzing";
 
 describe('Wallet: transfer', () => {
     let wallet: JWKInterface;
@@ -103,7 +105,7 @@ describe('Wallet: transfer', () => {
         expect(state.wallets[newWallets[2].walletAddress].amount).toEqual(50);
     });
 
-    it("should not allow someone to transfer to a banned wallet.", async() => {
+    it("should not allow someone to transfer to a banned wallet.", async () => {
         const pre: any = await contract.readState();
 
         contract.connect(newWallets[0].wallet);
@@ -124,7 +126,7 @@ describe('Wallet: transfer', () => {
             .toEqual(pre.state.wallets[newWallets[3].walletAddress].amount);
     });
 
-    it("should not allow a banned person to transfer.", async() => {
+    it("should not allow a banned person to transfer.", async () => {
         const pre: any = await contract.readState();
 
         contract.connect(newWallets[3].wallet);
@@ -144,10 +146,36 @@ describe('Wallet: transfer', () => {
         expect(state.wallets[newWallets[0].walletAddress].amount)
             .toEqual(pre.state.wallets[newWallets[0].walletAddress].amount);
     });
+
     /**
-     * Tests to write:
-     * 3. Should not allow a banned person to transfer to a wallet.
+     * Fuzzing strategy?
+     * 1. Define input, contract, & inital state.
+     * 3. Create fuzzing session with fuzz input. Define expectations.
+     *      Create some modular/expected fuzzes? Such as "must throw an exception"?
+     * 4. Dry run in Arweave.
      */
+    fuzz('FUZZ: should not allow a user to transfer more than what they own.', Fuzz.int({ min: 501 }), async (randAddr) => {
+        contract.connect(newWallets[0].wallet);
+        const result = await contract.dryWrite({
+            function: 'onboardAuthor',
+            parameters: {
+                newAuthor: randAddr
+            }
+        });
+        expect(result.type).toBe('error');
+    });
+
+    /*
+    Fuzz.test('FUZZ: should allow a user to transfer.', Fuzz.int({ max: 500 }), async (randAddr) => {
+        contract.connect(newWallets[0].wallet);
+        const result = await contract.dryWrite({
+            function: 'onboardAuthor',
+            parameters: {
+                newAuthor: randAddr
+            }
+        });
+        expect(result.type).toBe('error');
+    });*/
 
     /* Removed behavior. Anyone should be able to recieve or transfer rosettta.
     it('should not allow a user to transfer to a user that has no wallet.', async () => {

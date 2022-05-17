@@ -5,8 +5,8 @@ import Arweave from "arweave";
 import { JWKInterface } from "arweave/node/lib/wallet";
 import { Contract, SmartWeave } from "redstone-smartweave";
 import testSetup, { createNewWallet, mineBlock, SmartWeaveTestSuite } from "./testSetup";
-import * as Fuzz from "../../SmartWeaveFuzzing";
-import { fuzz } from "../../SmartWeaveFuzzing";
+import { fuzz, Fuzzers } from "../../SmartWeaveFuzzing";
+
 
 describe('Wallet: transfer', () => {
     let wallet: JWKInterface;
@@ -147,6 +147,8 @@ describe('Wallet: transfer', () => {
             .toEqual(pre.state.wallets[newWallets[0].walletAddress].amount);
     });
 
+    jest.setTimeout(120000);
+
     /**
      * Fuzzing strategy?
      * 1. Define input, contract, & inital state.
@@ -154,12 +156,25 @@ describe('Wallet: transfer', () => {
      *      Create some modular/expected fuzzes? Such as "must throw an exception"?
      * 4. Dry run in Arweave.
      */
-    fuzz('FUZZ: should not allow a user to transfer more than what they own.', Fuzz.int({ min: 501 }), async (randAddr) => {
-        contract.connect(newWallets[0].wallet);
+    fuzz('should not allow a user to transfer more than they own.', Fuzzers.int({ min: 51 }), async (randAddr) => {
+        contract.connect(newWallets[2].wallet);
         const result = await contract.dryWrite({
-            function: 'onboardAuthor',
+            function: 'transfer',
             parameters: {
-                newAuthor: randAddr
+                to: newWallets[0],
+                amount: randAddr
+            }
+        });
+        expect(result.type).toBe('error');
+    });
+
+    fuzz('should not allow a random wallet to transfer Rosetta.', Fuzzers.wallet(), async (randWallet: JWKInterface) => {    
+        contract.connect(randWallet);
+        const result = await contract.dryWrite({
+            function: 'transfer',
+            parameters: {
+                to: newWallets[0].walletAddress,
+                amount: 1
             }
         });
         expect(result.type).toBe('error');
